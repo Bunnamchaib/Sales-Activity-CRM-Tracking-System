@@ -3,201 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesFlow Pro | Smart Tracking System</title>
+    <title>SalesFlow Pro | Enterprise Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         body { font-family: 'Kanit', sans-serif; }
-        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-        #sidebar { transition: transform 0.3s ease-in-out; }
-        .loader { border-top-color: #3498db; animation: spinner 1.5s linear infinite; }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .loader-spin { border-top-color: #4f46e5; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* สไตล์พรีวิวรูป */
+        #photo-preview { display: none; max-height: 150px; object-fit: cover; border-radius: 1rem; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
 
     <div id="login-overlay" class="fixed inset-0 bg-indigo-900 z-[100] flex items-center justify-center p-4">
-        <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl text-center max-w-sm w-full">
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl text-center max-w-sm w-full border-4 border-indigo-500/20">
             <div class="text-6xl mb-6">🚀</div>
             <h2 class="text-3xl font-bold text-indigo-700 mb-2">SalesFlow</h2>
-            <p class="text-gray-400 mb-10 text-sm">กรุณาเข้าสู่ระบบเพื่อใช้งานระบบติดตามลูกค้า</p>
-            <div id="g_id_onload"
-                 data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com"
-                 data-callback="handleSignIn">
-            </div>
+            <p class="text-gray-400 mb-10 text-sm">ยินดีต้อนรับกลับเข้าสู่ระบบ</p>
+            <div id="g_id_onload" data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com" data-callback="handleSignIn"></div>
             <div class="g_id_signin flex justify-center" data-type="standard" data-shape="pill"></div>
         </div>
     </div>
 
-    <nav class="bg-white border-b p-4 sticky top-0 z-40 flex justify-between items-center shadow-sm">
+    <nav class="bg-white/80 backdrop-blur-md border-b p-4 sticky top-0 z-40 flex justify-between items-center">
         <div class="flex items-center gap-3">
-            <div class="bg-indigo-600 p-2 rounded-xl text-white font-bold">SF</div>
+            <div class="bg-indigo-600 p-2 rounded-xl text-white font-bold shadow-lg shadow-indigo-200">SF</div>
             <div>
-                <h1 class="font-bold text-gray-800 leading-none">SalesFlow Pro</h1>
-                <span id="user-display" class="text-[10px] text-gray-400 font-medium">Guest User</span>
+                <h1 class="font-bold text-gray-800 leading-none">SalesFlow <span class="text-indigo-500">Pro</span></h1>
+                <span id="user-display" class="text-[10px] text-gray-400 font-medium">Loading session...</span>
             </div>
         </div>
-        <button onclick="toggleMenu()" class="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
+        <button onclick="toggleMenu()" class="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m4 6h16"></path></svg>
         </button>
     </nav>
 
-    <div id="sidebar" class="fixed right-0 top-0 h-full w-72 bg-white z-[60] shadow-2xl translate-x-full p-6">
-        <div class="flex justify-between items-center mb-10 border-b pb-4">
-            <span class="font-bold text-indigo-600">MAIN MENU</span>
-            <button onclick="toggleMenu()" class="text-2xl text-gray-300 hover:text-red-500">&times;</button>
-        </div>
+    <div id="sidebar" class="fixed right-0 top-0 h-full w-72 bg-white z-[60] shadow-2xl translate-x-full p-6 transition-transform">
+        <div class="flex justify-between items-center mb-10 border-b pb-4 text-indigo-600 font-bold tracking-widest text-xs">CONTROL PANEL</div>
         <nav class="space-y-4 text-gray-600 font-medium">
-            <a href="#" class="block p-3 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition">📊 แดชบอร์ดสรุปผล</a>
-            <a href="#" class="block p-3 rounded-xl bg-indigo-50 text-indigo-600 border-l-4 border-indigo-600">➕ เพิ่มกิจกรรมการพบ</a>
-            <a href="#" class="block p-3 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition">🕒 ประวัติย้อนหลัง</a>
-            <hr>
-            <button onclick="location.reload()" class="w-full text-left p-3 rounded-xl text-red-400 hover:bg-red-50">ออกจากระบบ</button>
+            <button onclick="showPage('page-dashboard')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-3"><span>📊</span> แดชบอร์ด & ค้นหา</button>
+            <button onclick="showPage('page-form')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-3"><span>➕</span> บันทึกงานใหม่</button>
+            <hr class="border-gray-50">
+            <button onclick="logout()" class="w-full text-left p-4 rounded-2xl text-red-400 hover:bg-red-50 transition flex items-center gap-3"><span>🚪</span> ออกจากระบบ</button>
         </nav>
     </div>
 
-    <main class="p-4 md:p-8 max-w-2xl mx-auto">
-        <div class="bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-gray-100">
-            <div class="p-8 pb-0">
-                <h2 class="text-3xl font-black text-gray-800 tracking-tight">บันทึกกิจกรรมลูกค้า</h2>
-                <div class="h-1 w-20 bg-indigo-500 mt-2 rounded-full"></div>
+    <section id="page-dashboard" class="tab-content active p-4 md:p-8 max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <h2 class="text-3xl font-black text-gray-800 tracking-tighter">Activity Analytics</h2>
+            <div class="relative w-full md:w-64">
+                <input type="text" id="globalSearch" oninput="filterDashboard()" placeholder="ค้นหาชื่อลูกค้า/หัวเรื่อง..." class="w-full pl-10 pr-4 py-3 rounded-2xl border-none shadow-sm bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                <span class="absolute left-3 top-3.5 text-gray-400">🔍</span>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+            <select id="filterMonth" onchange="filterDashboard()" class="bg-white p-3 rounded-xl shadow-sm border-none text-xs font-bold text-gray-500 outline-none">
+                <option value="">ทุกเดือน</option>
+                <option value="01">มกราคม</option><option value="02">กุมภาพันธ์</option><option value="03">มีนาคม</option>
+                <option value="04">เมษายน</option><option value="05">พฤษภาคม</option><option value="06">มิถุนายน</option>
+                <option value="07">กรกฎาคม</option><option value="08">สิงหาคม</option><option value="09">กันยายน</option>
+                <option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+            </select>
+            <input type="number" id="filterYear" oninput="filterDashboard()" placeholder="ปี (เช่น 2026)" class="bg-white p-3 rounded-xl shadow-sm border-none text-xs font-bold text-gray-500 outline-none">
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-white text-center">
+                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Logs</div>
+                <div id="stat-total" class="text-3xl font-black text-indigo-600">-</div>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-white text-center">
+                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Success</div>
+                <div id="stat-success" class="text-3xl font-black text-green-500">-</div>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-white text-center">
+                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Pending</div>
+                <div id="stat-pending" class="text-3xl font-black text-amber-500">-</div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
+            <div class="p-6 border-b flex justify-between items-center bg-gray-50/50">
+                <h3 class="font-bold text-gray-700">ประวัติการเข้าพบลูกค้า</h3>
+                <button onclick="fetchInitialData()" class="bg-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-sm hover:shadow-md transition">REFRESH ↻</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 text-gray-400 uppercase text-[10px]">
+                        <tr>
+                            <th class="px-6 py-4">วันที่/เวลา</th>
+                            <th class="px-6 py-4">ลูกค้า</th>
+                            <th class="px-6 py-4">หัวเรื่อง & ทีมงาน</th>
+                            <th class="px-6 py-4">ไฟล์แนบ</th>
+                            <th class="px-6 py-4 text-center">สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-list" class="divide-y divide-gray-50">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="page-form" class="tab-content p-4 md:p-8 max-w-2xl mx-auto">
+        <div class="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-gray-100">
+            <div class="bg-indigo-600 p-10 text-white">
+                <h2 class="text-3xl font-black tracking-tight">New Activity Log</h2>
+                <p class="text-indigo-200 text-xs mt-1 uppercase tracking-widest">บันทึกรายละเอียดการประชุมและทีมงาน</p>
             </div>
 
-            <form id="salesForm" class="p-8 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="md:col-span-3">
-                        <label class="text-xs font-bold text-gray-400 uppercase">ชื่อลูกค้า (Autocomplete)</label>
-                        <input type="text" id="customerName" list="clientList" onchange="autoCalculateVisit()"
-                            class="w-full border-2 border-gray-50 p-4 rounded-2xl bg-gray-50 focus:border-indigo-400 outline-none transition mt-1" 
-                            placeholder="พิมพ์ชื่อบริษัท..." required>
+            <form id="salesForm" class="p-10 space-y-6">
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="col-span-3">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Customer Name</label>
+                        <input type="text" id="customerName" list="clientList" onchange="autoCalculateVisit()" class="w-full border-2 border-gray-50 p-4 rounded-2xl bg-gray-50 focus:border-indigo-400 outline-none transition mt-1" required>
                         <datalist id="clientList"></datalist>
                     </div>
-                    <div class="md:col-span-1">
-                        <label class="text-xs font-bold text-gray-400 uppercase">ครั้งที่</label>
-                        <input type="text" id="visitCount" readonly value="1"
-                            class="w-full bg-white p-4 rounded-2xl border-2 border-indigo-100 text-center font-bold text-indigo-600 text-xl mt-1">
+                    <div class="col-span-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase text-center block">Visit</label>
+                        <input type="text" id="visitCount" readonly value="1" class="w-full bg-indigo-50 p-4 rounded-2xl border-none text-center font-bold text-indigo-600 text-xl mt-1">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="text-xs font-bold text-gray-400 uppercase">วันที่/เวลา</label>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Date & Time</label>
                         <input type="datetime-local" id="visitDateTime" class="w-full border-2 border-gray-50 p-4 rounded-2xl bg-gray-50 mt-1">
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-gray-400 uppercase">ลูกค้า/ผู้ที่พบ</label>
-                        <input type="text" id="contactPerson" class="w-full border-2 border-gray-50 p-4 rounded-2xl bg-gray-50 mt-1" placeholder="ชื่อคนรับหน้า">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Team Members (ประชุมกี่คน)</label>
+                        <input type="text" id="teamMembers" class="w-full border-2 border-gray-50 p-4 rounded-2xl bg-gray-50 mt-1" placeholder="เช่น นาย A, นาย B">
                     </div>
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-gray-400 uppercase block mb-2">เป้าหมาย/หัวเรื่อง</label>
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        <button type="button" onclick="setSubject('แนะนำตัวใหม่')" class="text-[10px] font-bold bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full hover:bg-indigo-200">แนะนำตัว</button>
-                        <button type="button" onclick="setSubject('พรีเซนต์ใบเสนอราคา')" class="text-[10px] font-bold bg-green-100 text-green-600 px-3 py-1 rounded-full hover:bg-green-200">เสนอราคา</button>
-                        <button type="button" onclick="setSubject('ติดตามการสั่งซื้อ')" class="text-[10px] font-bold bg-amber-100 text-amber-600 px-3 py-1 rounded-full hover:bg-amber-200">ติดตามงาน</button>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Subject</label>
+                    <input type="text" id="subject" class="w-full border-2 border-gray-50 p-4 rounded-2xl bg-gray-50 focus:border-indigo-400 outline-none mt-1" required>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-[2rem] border-2 border-dashed border-gray-200">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase block mb-3 text-center">📷 แนบภาพถ่าย/หลักฐานที่ประชุม</label>
+                    <input type="file" id="photoInput" accept="image/*" onchange="previewPhoto()" class="hidden">
+                    <div onclick="document.getElementById('photoInput').click()" class="cursor-pointer text-center p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:bg-gray-50 transition">
+                        <span class="text-xs text-indigo-500 font-bold">เลือกรูปภาพ...</span>
                     </div>
-                    <input type="text" id="subject" class="w-full border-2 border-gray-50 p-4 rounded-2xl bg-gray-50 focus:border-indigo-400 outline-none" placeholder="ระบุเป้าหมายการเข้าพบ" required>
+                    <img id="photo-preview" class="mt-4 mx-auto shadow-md">
+                    <input type="hidden" id="photoData"> </div>
+
+                <textarea id="comment" class="w-full border-2 border-gray-50 p-4 rounded-2xl h-24 bg-gray-50 outline-none focus:border-indigo-400" placeholder="บันทึกรายละเอียดเพิ่มเติม..."></textarea>
+
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="cursor-pointer"><input type="radio" name="status" value="ตามเป้า" class="peer hidden" checked><div class="p-4 border rounded-2xl text-center text-[10px] font-bold bg-white peer-checked:bg-green-500 peer-checked:text-white transition">🟢 ตามเป้า</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="status" value="รอลูกค้า" class="peer hidden"><div class="p-4 border rounded-2xl text-center text-[10px] font-bold bg-white peer-checked:bg-amber-500 peer-checked:text-white transition">🟡 รอลูกค้า</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="status" value="มีปัญหา" class="peer hidden"><div class="p-4 border rounded-2xl text-center text-[10px] font-bold bg-white peer-checked:bg-red-500 peer-checked:text-white transition">🔴 มีปัญหา</div></label>
                 </div>
 
-                <div>
-                    <label class="text-xs font-bold text-gray-400 uppercase">รายละเอียด & คอมเมนต์ (Pain Point)</label>
-                    <textarea id="comment" class="w-full border-2 border-gray-50 p-4 rounded-2xl h-32 bg-gray-50 focus:border-indigo-400 outline-none mt-1" placeholder="จดบันทึกปัญหาหรือสิ่งที่ลูกค้าต้องการ..."></textarea>
-                </div>
-
-                <div class="bg-slate-50 p-5 rounded-3xl border border-dashed border-gray-200">
-                    <label class="text-xs font-bold text-gray-400 uppercase block mb-3 text-center">สรุปผลลัพธ์การเจรจา</label>
-                    <div class="grid grid-cols-3 gap-3">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="status" value="ตามเป้า" class="peer hidden" checked>
-                            <div class="p-3 border-2 rounded-2xl text-center bg-white text-xs font-bold text-gray-300 peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-500 transition-all">🟢 ตามเป้า</div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="status" value="รอลูกค้าตอบกลับ" class="peer hidden">
-                            <div class="p-3 border-2 rounded-2xl text-center bg-white text-xs font-bold text-gray-300 peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 transition-all">🟡 รอลูกค้า</div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="status" value="ติดปัญหา/ไม่คืบหน้า" class="peer hidden">
-                            <div class="p-3 border-2 rounded-2xl text-center bg-white text-xs font-bold text-gray-300 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition-all">🔴 มีปัญหา</div>
-                        </label>
-                    </div>
-                </div>
-
-                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 text-white font-bold py-5 rounded-[2rem] shadow-xl shadow-indigo-100 active:scale-95 transition-all flex items-center justify-center gap-3">
-                    <span id="btnText">💾 บันทึกและส่งข้อมูล</span>
-                    <div id="loader" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 text-white font-black py-6 rounded-[2rem] flex items-center justify-center gap-3 active:scale-95 transition-transform shadow-2xl shadow-indigo-200">
+                    <span id="btnText">SAVE ACTIVITY LOG</span>
+                    <div id="loader" class="hidden w-5 h-5 border-2 border-white loader-spin rounded-full"></div>
                 </button>
             </form>
         </div>
-    </main>
+    </section>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxrVQ5_q_7Ti-aUGn0EGGr1fmsqJwOV6akisrmH_irAgpwNCcY9AQsBq5n_ZJ0Wx2wy/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwnQyl4zuGQogMDEeaDeLWljwkbW0D4mRvHdnKGRYqiSkIoypmKAFbJ9hTinP_A0nIi/exec";
         let allRecords = [];
 
-        // 1. ระบบ Login
+        // --- 1. ระบบ Login (Persistent) ---
+        window.onload = () => {
+            const savedUser = localStorage.getItem('sales_user');
+            if (savedUser) {
+                document.getElementById('user-display').innerText = savedUser;
+                document.getElementById('login-overlay').style.display = 'none';
+                fetchInitialData();
+            }
+            initTime();
+        };
+
         function handleSignIn(response) {
             const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            localStorage.setItem('sales_user', payload.email);
             document.getElementById('user-display').innerText = payload.email;
             document.getElementById('login-overlay').style.display = 'none';
-            fetchInitialData(); // โหลดข้อมูล Autocomplete หลังจาก Login
+            fetchInitialData();
         }
 
-        // 2. ฟังก์ชัน UI
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('translate-x-full');
+        function logout() { localStorage.removeItem('sales_user'); location.reload(); }
+
+        // --- 2. ระบบ Navigation ---
+        function showPage(pageId) {
+            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            toggleMenu(false);
         }
 
-        function setSubject(val) {
-            document.getElementById('subject').value = val;
+        function toggleMenu(forceClose = null) {
+            const sidebar = document.getElementById('sidebar');
+            if (forceClose === false) sidebar.classList.add('translate-x-full');
+            else sidebar.classList.toggle('translate-x-full');
         }
 
-        // 3. จัดการเวลาปัจจุบัน
-        window.onload = () => {
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            document.getElementById('visitDateTime').value = now.toISOString().slice(0, 16);
+        // --- 3. จัดการรูปภาพ (Base64) ---
+        function previewPhoto() {
+            const file = document.getElementById('photoInput').files[0];
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                document.getElementById('photo-preview').src = reader.result;
+                document.getElementById('photo-preview').style.display = 'block';
+                document.getElementById('photoData').value = reader.result;
+            }
+            if (file) reader.readAsDataURL(file);
         }
 
-        // 4. ดึงข้อมูลจาก Sheet มาทำ Autocomplete & Count
+        // --- 4. ดึงข้อมูล & Dashboard กรองได้ ---
         async function fetchInitialData() {
             try {
                 const res = await fetch(WEB_APP_URL);
                 allRecords = await res.json();
-                const datalist = document.getElementById('clientList');
-                const uniqueNames = [...new Set(allRecords.map(r => r[2]))];
-                uniqueNames.forEach(name => {
-                    if(name) {
-                        let opt = document.createElement('option');
-                        opt.value = name;
-                        datalist.appendChild(opt);
-                    }
-                });
-            } catch (e) { console.error("Error fetching data:", e); }
+                filterDashboard(); // เริ่มต้นด้วยการกรองทั้งหมด
+            } catch (e) { console.error(e); }
+        }
+
+        function filterDashboard() {
+            const searchTerm = document.getElementById('globalSearch').value.toLowerCase();
+            const filterMonth = document.getElementById('filterMonth').value;
+            const filterYear = document.getElementById('filterYear').value;
+
+            const filtered = allRecords.filter(r => {
+                const dateStr = r[4]; // Column E: วันที่
+                const customer = String(r[2]).toLowerCase(); // Column C: ลูกค้า
+                const subject = String(r[6]).toLowerCase(); // Column G: หัวเรื่อง
+                
+                const matchSearch = customer.includes(searchTerm) || subject.includes(searchTerm);
+                const matchMonth = filterMonth ? dateStr.includes(`-${filterMonth}-`) : true;
+                const matchYear = filterYear ? dateStr.startsWith(filterYear) : true;
+                
+                return matchSearch && matchMonth && matchYear;
+            });
+
+            renderStats(filtered);
+            renderList(filtered);
+            updateAutocomplete();
+        }
+
+        function renderStats(data) {
+            document.getElementById('stat-total').innerText = data.length;
+            document.getElementById('stat-success').innerText = data.filter(r => r[8] === 'ตามเป้า').length;
+            document.getElementById('stat-pending').innerText = data.filter(r => r[8].includes('รอ')).length;
+        }
+
+        function renderList(data) {
+            const listBody = document.getElementById('recent-list');
+            listBody.innerHTML = '';
+            data.slice().reverse().forEach(r => {
+                const photoHtml = r[11] ? `<img src="${r[11]}" class="w-10 h-10 rounded-lg object-cover cursor-pointer" onclick="window.open(this.src)">` : '<span class="text-gray-300">-</span>';
+                const row = `<tr class="hover:bg-indigo-50/30 transition">
+                    <td class="px-6 py-4 text-[10px] font-bold text-indigo-400">${r[4]}<br>${r[5]}</td>
+                    <td class="px-6 py-4 font-bold text-gray-800">${r[2]}<br><span class="text-[9px] text-gray-400">ครั้งที่: ${r[3]}</span></td>
+                    <td class="px-6 py-4 text-xs">
+                        <div class="font-bold text-gray-700">${r[6]}</div>
+                        <div class="text-[9px] text-indigo-400 font-medium">ทีมงาน: ${r[10] || 'ไม่ได้ระบุ'}</div>
+                    </td>
+                    <td class="px-6 py-4">${photoHtml}</td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="px-2 py-1 rounded-full text-[9px] font-bold ${getStatusClass(r[8])}">${r[8]}</span>
+                    </td>
+                </tr>`;
+                listBody.innerHTML += row;
+            });
+        }
+
+        function getStatusClass(s) {
+            if(s === 'ตามเป้า') return 'bg-green-100 text-green-600';
+            if(s.includes('รอ')) return 'bg-amber-100 text-amber-600';
+            return 'bg-red-100 text-red-600';
+        }
+
+        function updateAutocomplete() {
+            const datalist = document.getElementById('clientList');
+            datalist.innerHTML = '';
+            [...new Set(allRecords.map(r => r[2]))].forEach(name => {
+                let opt = document.createElement('option'); opt.value = name; datalist.appendChild(opt);
+            });
+        }
+
+        // --- 5. บันทึกข้อมูล ---
+        function initTime() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('visitDateTime').value = now.toISOString().slice(0, 16);
         }
 
         function autoCalculateVisit() {
             const name = document.getElementById('customerName').value;
             const count = allRecords.filter(r => r[2] === name).length;
             document.getElementById('visitCount').value = count + 1;
-            
-            // ดึงข้อมูล "คนที่พบ" ล่าสุดมาใส่ให้
-            const lastMeeting = allRecords.filter(r => r[2] === name).pop();
-            if(lastMeeting) {
-                 // สมมติคอลัมน์คนที่พบเก็บไว้ในฐานข้อมูลด้วย (ต้องไปเพิ่มใน Google Script เอง)
-                 // document.getElementById('contactPerson').value = lastMeeting[X];
-            }
         }
 
-        // 5. ส่งข้อมูล
         document.getElementById('salesForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             const loader = document.getElementById('loader');
-            
-            btn.disabled = true;
-            loader.classList.remove('hidden');
+            btn.disabled = true; loader.classList.remove('hidden');
 
             const payload = {
                 customerName: document.getElementById('customerName').value,
@@ -205,22 +318,21 @@
                 visitDateTime: document.getElementById('visitDateTime').value,
                 subject: document.getElementById('subject').value,
                 comment: document.getElementById('comment').value,
-                status: document.querySelector('input[name="status"]:checked').value
+                status: document.querySelector('input[name="status"]:checked').value,
+                teamMembers: document.getElementById('teamMembers').value,
+                photo: document.getElementById('photoData').value // ส่ง Base64
             };
 
             try {
-                await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(payload)
-                });
-                alert("✅ บันทึกสำเร็จ!");
-                location.reload();
-            } catch (err) {
-                alert("❌ เกิดข้อผิดพลาด");
-                btn.disabled = false;
-                loader.classList.add('hidden');
-            }
+                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                alert("🚀 บันทึกกิจกรรมสำเร็จ!");
+                await fetchInitialData();
+                showPage('page-dashboard');
+                document.getElementById('salesForm').reset();
+                document.getElementById('photo-preview').style.display = 'none';
+                initTime();
+            } catch (err) { alert("❌ Error"); }
+            finally { btn.disabled = false; loader.classList.add('hidden'); }
         });
     </script>
 </body>
