@@ -3,310 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesFlow Pro | Stable Edition</title>
+    <title>SalesFlow Pro | Advanced Tracking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Kanit', sans-serif; }
+        body { font-family: 'Kanit', sans-serif; scroll-behavior: smooth; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .loader-spin { border-top-color: #4f46e5; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #calendar { background: white; padding: 20px; border-radius: 2rem; border: 1px solid #f1f5f9; min-height: 500px; }
+        /* Toast Animation */
+        #toast-container { position: fixed; top: 1rem; right: 1rem; z-index: 200; }
+        .toast { animation: slideIn 0.3s ease-out forwards; min-width: 250px; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .timeline-card { border-left: 3px solid #4f46e5; position: relative; padding-left: 1.5rem; }
+        .timeline-card::before { content: ''; position: absolute; left: -0.55rem; top: 1.25rem; width: 0.8rem; height: 0.8rem; background: #4f46e5; border-radius: 50%; border: 2px solid white; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
 
+    <div id="toast-container"></div>
+
     <div id="login-overlay" class="fixed inset-0 bg-indigo-900 z-[100] flex items-center justify-center p-4">
-        <div class="bg-white p-10 rounded-[3rem] shadow-2xl text-center max-w-sm w-full">
+        <div class="bg-white p-10 rounded-[3rem] shadow-2xl text-center max-w-sm w-full border-4 border-indigo-100">
             <div class="text-6xl mb-6">🚀</div>
             <h2 class="text-3xl font-bold text-indigo-700 mb-2">SalesFlow</h2>
-            <p class="text-gray-400 mb-8 text-sm">ล็อกอินเพื่อเข้าสู่ระบบจัดการงานขาย</p>
-            <div id="g_id_onload" data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com" data-callback="handleSignIn"></div>
+            <p class="text-gray-400 mb-8 text-sm">เข้าใช้งานระบบจัดการงานขาย</p>
+            <div id="g_id_onload" data-client_id="YOUR_CLIENT_ID" data-callback="handleSignIn"></div>
             <div class="g_id_signin flex justify-center" data-type="standard" data-shape="pill"></div>
         </div>
     </div>
 
-    <nav class="bg-white/80 backdrop-blur-md border-b p-4 sticky top-0 z-40 flex justify-between items-center">
+    <nav class="bg-white/90 backdrop-blur-md border-b p-4 sticky top-0 z-40 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-3">
-            <div class="bg-indigo-600 p-2 rounded-xl text-white font-bold shadow-lg">SF</div>
+            <div class="bg-indigo-600 p-2 rounded-xl text-white font-bold shadow-lg shadow-indigo-200">SF</div>
             <div>
-                <h1 class="font-bold text-gray-800 leading-none">SalesFlow <span class="text-indigo-500">Pro</span></h1>
-                <span id="user-display" class="text-[10px] text-gray-400 font-medium">Checking session...</span>
+                <h1 class="font-bold text-gray-800 leading-none text-sm">SalesFlow <span class="text-indigo-500">Pro</span></h1>
+                <span id="user-display" class="text-[9px] text-gray-400 font-bold uppercase tracking-tighter">Authorized User</span>
             </div>
         </div>
         <button onclick="toggleSidebar()" class="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m4 6h16"></path></svg>
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 6h16M4 12h16m4 6h16"></path></svg>
         </button>
     </nav>
 
-    <div id="sidebar" class="fixed right-0 top-0 h-full w-72 bg-white z-[60] shadow-2xl translate-x-full p-6 transition-transform">
-        <div class="flex justify-between items-center mb-8 border-b pb-4 text-indigo-600 font-bold uppercase text-xs">Menu Control</div>
-        <nav class="space-y-2">
-            <button onclick="showPage('page-dashboard')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-3 font-medium text-gray-600">📊 แดชบอร์ดสรุปผล</button>
-            <button onclick="openNewJobForm()" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-3 font-medium text-gray-600">➕ บันทึกงานใหม่ (ด่วน)</button>
-            <button onclick="showPage('page-plan-list')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-3 font-medium text-gray-600">📅 งานตามแผนนัด</button>
-            <button onclick="showPage('page-planner')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-3 font-medium text-gray-600">📝 วางแผนการเข้าพบ</button>
-            <hr class="my-4">
-            <button onclick="logout()" class="w-full text-left p-4 rounded-2xl text-red-400 hover:bg-red-50 transition flex items-center gap-3 font-medium">🚪 ออกจากระบบ</button>
+    <div id="sidebar" class="fixed right-0 top-0 h-full w-72 bg-white z-[60] shadow-2xl translate-x-full p-8 transition-transform">
+        <div class="flex justify-between items-center mb-10 border-b pb-4">
+            <span class="text-indigo-600 font-black text-xs tracking-widest uppercase">Navigation</span>
+            <button onclick="toggleSidebar()" class="text-gray-400">✕</button>
+        </div>
+        <nav class="space-y-3">
+            <button onclick="showPage('page-dashboard')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-4 text-gray-600 font-bold">📊 Dashboard</button>
+            <button onclick="showPage('page-profile')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-4 text-gray-600 font-bold">👤 My Profile</button>
+            <button onclick="showPage('page-form')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-4 text-gray-600 font-bold">➕ New Activity</button>
+            <button onclick="showPage('page-plan-list')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-4 text-gray-600 font-bold">📅 Scheduled Plans</button>
+            <div class="pt-10">
+                <button onclick="logout()" class="w-full text-left p-4 rounded-2xl text-red-400 hover:bg-red-50 transition flex items-center gap-4 font-bold">🚪 Logout</button>
+            </div>
         </nav>
     </div>
 
-    <section id="page-dashboard" class="tab-content active p-4 md:p-8 max-w-6xl mx-auto">
-        <h2 class="text-3xl font-black text-gray-800 mb-6">Business Overview</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border-b-4 border-indigo-500">
-                <div class="text-[10px] font-bold text-gray-400 uppercase">Total Logs</div>
-                <div id="stat-total" class="text-3xl font-black text-indigo-600 mt-1">0</div>
-            </div>
-            </div>
-        <div id="unique-customer-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            </div>
-    </section>
-
-    <section id="page-planner" class="tab-content p-4 md:p-8 max-w-6xl mx-auto">
-        <div class="flex flex-col lg:flex-row gap-8">
-            <div class="flex-1">
-                <div id="calendar"></div>
-            </div>
-            <div class="w-full lg:w-80">
-                <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-50">
-                    <h3 class="font-bold text-xl mb-6 text-indigo-600">📌 สร้างแผนงาน</h3>
-                    <form id="planForm" class="space-y-4">
-                        <input type="text" id="planCustomer" placeholder="ชื่อลูกค้า" class="w-full p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-indigo-400 font-medium" required>
-                        <input type="text" id="planModel" placeholder="Model / Project" class="w-full p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-indigo-400 font-medium">
-                        <input type="date" id="planDate" class="w-full p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-indigo-400 font-medium" required>
-                        <textarea id="planGoal" placeholder="เป้าหมายการเข้าพบ" class="w-full p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-indigo-400 font-medium h-24"></textarea>
-                        <button type="submit" id="planSubmitBtn" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-[1.5rem] shadow-lg active:scale-95 transition">บันทึกลงปฏิทิน</button>
-                    </form>
-                </div>
+    <section id="page-profile" class="tab-content p-6 max-w-2xl mx-auto">
+        <div class="bg-white rounded-[3rem] shadow-xl p-10 text-center border-t-8 border-indigo-500 relative">
+            <div class="w-24 h-24 bg-indigo-50 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl">👤</div>
+            <h2 id="prof-name" class="text-2xl font-black text-gray-800">...</h2>
+            <p id="prof-email" class="text-gray-400 text-sm mb-8">...</p>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-50 p-6 rounded-3xl text-left"><span class="text-[9px] font-bold text-gray-400 uppercase">Role</span><p class="font-bold text-indigo-600">Sales Professional</p></div>
+                <div class="bg-slate-50 p-6 rounded-3xl text-left"><span class="text-[9px] font-bold text-gray-400 uppercase">Status</span><p class="font-bold text-green-500">Active (30 Days)</p></div>
             </div>
         </div>
     </section>
 
-    <section id="page-plan-list" class="tab-content p-4 md:p-8 max-w-4xl mx-auto">
-        <h2 class="text-3xl font-black text-gray-800 mb-8">แผนงานที่รอดำเนินการ</h2>
-        <div id="pending-plan-list" class="space-y-4">
+    <section id="page-dashboard" class="tab-content active p-6 max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div>
+                <h2 class="text-4xl font-black text-gray-800 tracking-tighter">Dashboard</h2>
+                <p class="text-gray-400 text-sm">ติดตามกิจกรรม 10 รายล่าสุดของคุณ</p>
             </div>
-    </section>
-
-    <section id="page-form" class="tab-content p-4 md:p-8 max-w-3xl mx-auto">
-        <div class="bg-white rounded-[3rem] shadow-2xl overflow-hidden">
-            <div class="bg-indigo-600 p-8 text-white">
-                <h2 class="text-2xl font-black" id="form-title">บันทึกกิจกรรม</h2>
-                <p id="form-subtitle" class="text-indigo-200 text-xs uppercase font-bold tracking-widest mt-1">Activity Log</p>
+            
+            <div class="relative w-full md:w-80">
+                <input type="text" id="dashboardSearch" oninput="filterDashboard()" 
+                       placeholder="ค้นหาลูกค้า, โมเดล, หรือหัวข้อ..." 
+                       class="w-full p-4 pl-12 bg-white rounded-2xl shadow-sm border-none outline-none focus:ring-2 focus:ring-indigo-400 text-sm font-medium">
+                <div class="absolute left-4 top-4 text-gray-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
             </div>
-            <form id="salesForm" class="p-8 space-y-5">
-                <input type="hidden" id="logType" value="Ad-hoc">
-                <input type="hidden" id="planId" value="">
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" id="customerName" placeholder="ชื่อลูกค้า" class="w-full p-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-indigo-400 font-bold" required onchange="autoCalculateVisit()">
-                    <input type="text" id="modelName" placeholder="Model" class="w-full p-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-indigo-400 font-bold">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="date" id="visitDate" class="w-full p-4 rounded-2xl bg-gray-50 border-none font-bold">
-                    <input type="text" id="visitCount" readonly class="w-full p-4 rounded-2xl bg-indigo-50 border-none text-center font-black text-indigo-600" placeholder="ครั้งที่">
-                </div>
-                <input type="text" id="subject" placeholder="หัวข้อการเข้าพบ" class="w-full p-4 rounded-2xl bg-gray-50 border-none font-bold" required>
-                <textarea id="comment" placeholder="รายละเอียดสรุป..." class="w-full p-4 rounded-2xl h-32 bg-gray-50 border-none"></textarea>
-                
-                <div class="p-4 border-4 border-dashed border-indigo-50 rounded-3xl text-center">
-                    <input type="file" id="fileInput" multiple class="hidden" onchange="handleFileSelect()">
-                    <button type="button" onclick="document.getElementById('fileInput').click()" class="text-indigo-600 font-bold text-sm">📎 แนบไฟล์/รูปภาพ (สูงสุด 5 ไฟล์)</button>
-                    <div id="file-list" class="mt-2 flex flex-wrap gap-2 justify-center"></div>
-                </div>
-
-                <div class="grid grid-cols-3 gap-3">
-                    <label class="cursor-pointer"><input type="radio" name="status" value="ตามเป้า" class="peer hidden" checked><div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-green-500 peer-checked:text-white text-center text-xs font-bold transition">ตามเป้า</div></label>
-                    <label class="cursor-pointer"><input type="radio" name="status" value="รอ" class="peer hidden"><div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-amber-500 peer-checked:text-white text-center text-xs font-bold transition">รอ</div></label>
-                    <label class="cursor-pointer"><input type="radio" name="status" value="มีปัญหา" class="peer hidden"><div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-red-500 peer-checked:text-white text-center text-xs font-bold transition">ปัญหา</div></label>
-                </div>
-
-                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 text-white font-black py-5 rounded-2xl shadow-xl flex justify-center items-center gap-3">
-                    <span>บันทึกข้อมูลสำเร็จ</span>
-                    <div id="loader" class="hidden w-5 h-5 border-4 border-white border-t-transparent loader-spin rounded-full"></div>
-                </button>
-            </form>
         </div>
+
+        <div id="unique-customer-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
     </section>
+
+    <div id="timeline-modal" class="fixed inset-0 bg-indigo-900/40 z-[100] hidden items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white w-full max-w-3xl max-h-[85vh] rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-8 border-b flex justify-between items-center bg-indigo-50/50">
+                <div>
+                    <h2 id="modal-cust-name" class="text-2xl font-black text-indigo-900 leading-none">-</h2>
+                    <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mt-2">Activity Timeline</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="downloadPDF()" class="bg-white p-3 rounded-xl shadow-sm hover:bg-indigo-600 hover:text-white transition text-xs font-black">PDF</button>
+                    <button onclick="closeTimeline()" class="bg-white p-3 rounded-xl shadow-sm text-gray-400 hover:text-red-500 transition text-sm">✕</button>
+                </div>
+            </div>
+            <div id="timeline-content" class="flex-1 overflow-y-auto p-10 space-y-8 bg-white">
+                </div>
+        </div>
+    </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzlp0lUcF3-XeKDftXvkTekkRDU6JAGeV3_IfjaYDNXZyFGTXYBK9LLvBXWQXsM_2FJ/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw5gWKUSrmQMivgnSTDsiCubx0toR1lRORjij5rj3iSvyWJpIT1UYr0lPjwfpakbmcr/exec"; 
         let allRecords = [];
-        let allPlans = [];
         let currentUser = null;
-        let attachedFiles = [];
 
-        // --- 1. LOGIN SYSTEM (30 DAYS) ---
+        // --- 1. Notification System (Toast) ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+            toast.className = `toast ${bgColor} text-white px-6 py-4 rounded-2xl shadow-2xl mb-3 flex items-center gap-3 font-bold text-sm`;
+            toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3000);
+        }
+
+        // --- 2. Auth System (30 Days) ---
         window.onload = () => {
-            const savedUser = localStorage.getItem('sales_user_30days');
-            if (savedUser) {
-                const user = JSON.parse(savedUser);
+            const saved = localStorage.getItem('sales_user_30d');
+            if (saved) {
+                const user = JSON.parse(saved);
                 if (new Date().getTime() < user.expiry) {
                     currentUser = user;
                     document.getElementById('login-overlay').style.display = 'none';
                     document.getElementById('user-display').innerText = user.name;
+                    document.getElementById('prof-name').innerText = user.name;
+                    document.getElementById('prof-email').innerText = user.email;
                     fetchInitialData();
-                } else { localStorage.removeItem('sales_user_30days'); }
+                } else { localStorage.removeItem('sales_user_30d'); }
             }
-            initCalendar();
-            document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('planDate').value = new Date().toISOString().split('T')[0];
         };
 
         function handleSignIn(response) {
             const payload = JSON.parse(atob(response.credential.split('.')[1]));
             const expiry = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
-            const userData = { email: payload.email, name: payload.name, expiry: expiry };
-            localStorage.setItem('sales_user_30days', JSON.stringify(userData));
-            location.reload();
+            currentUser = { email: payload.email, name: payload.name, expiry: expiry };
+            localStorage.setItem('sales_user_30d', JSON.stringify(currentUser));
+            showToast("ยินดีต้อนรับ! ล็อกอินสำเร็จ");
+            setTimeout(() => location.reload(), 1000);
         }
 
-        function logout() { localStorage.removeItem('sales_user_30days'); location.reload(); }
+        function logout() { 
+            localStorage.removeItem('sales_user_30d'); 
+            showToast("ออกจากระบบแล้ว");
+            setTimeout(() => location.reload(), 1000); 
+        }
 
-        // --- 2. DATA & INTERFACE ---
+        // --- 3. Dashboard Filter & Rendering ---
         async function fetchInitialData() {
-            if (!currentUser) return;
-            const res = await fetch(`${WEB_APP_URL}?action=getAll&email=${currentUser.email}`);
-            const data = await res.json();
-            allRecords = data.records;
-            allPlans = data.plans;
-            updateDashboard();
-            updateCalendarEvents();
-            renderPendingPlans();
+            try {
+                const res = await fetch(`${WEB_APP_URL}?action=getAll&email=${currentUser.email}`);
+                const data = await res.json();
+                allRecords = data.records || [];
+                renderUniqueDashboard(allRecords);
+            } catch (e) { showToast("ไม่สามารถโหลดข้อมูลได้", "error"); }
         }
 
-        function showPage(id) {
-            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            toggleSidebar(false);
-            if(id === 'page-planner') setTimeout(() => window.calendar.render(), 300);
+        function filterDashboard() {
+            const term = document.getElementById('dashboardSearch').value.toLowerCase();
+            // ค้นหาทั้งชื่อลูกค้า (Col C), Model (Col D), หัวข้อ (Col G)
+            const filtered = allRecords.filter(r => 
+                r[2].toLowerCase().includes(term) || 
+                r[3].toLowerCase().includes(term) || 
+                r[6].toLowerCase().includes(term)
+            );
+            renderUniqueDashboard(filtered);
         }
 
-        function toggleSidebar(force = null) {
-            const sb = document.getElementById('sidebar');
-            if (force === false) sb.classList.add('translate-x-full');
-            else sb.classList.toggle('translate-x-full');
-        }
+        function renderUniqueDashboard(data) {
+            const list = document.getElementById('unique-customer-list');
+            list.innerHTML = '';
+            
+            const unique = [];
+            const seen = new Set();
+            // กรอง 10 รายล่าสุดที่ไม่ซ้ำชื่อลูกค้า
+            for (let i = data.length - 1; i >= 0; i--) {
+                const name = data[i][2];
+                if (!seen.has(name) && unique.length < 10) {
+                    seen.add(name);
+                    unique.push(data[i]);
+                }
+            }
 
-        function openNewJobForm() {
-            document.getElementById('form-title').innerText = "บันทึกกิจกรรม (งานด่วน)";
-            document.getElementById('logType').value = "Ad-hoc";
-            document.getElementById('planId').value = "";
-            document.getElementById('salesForm').reset();
-            showPage('page-form');
-        }
-
-        function renderPendingPlans() {
-            const list = document.getElementById('pending-plan-list');
-            list.innerHTML = allPlans.length ? '' : '<p class="text-gray-400">ไม่มีแผนงานคงค้าง</p>';
-            allPlans.forEach(p => {
+            unique.forEach(r => {
                 list.innerHTML += `
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border-l-8 border-indigo-500 flex justify-between items-center">
-                        <div>
-                            <h4 class="font-bold text-gray-800">${p.customer}</h4>
-                            <p class="text-xs text-gray-500">📅 ${p.date} | 🎯 ${p.goal}</p>
+                    <div onclick="openTimeline('${r[2]}')" class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:scale-[1.02] transition cursor-pointer group">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="bg-indigo-50 p-4 rounded-2xl text-2xl group-hover:bg-indigo-600 transition">🏢</div>
+                            <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">${r[5]}</span>
                         </div>
-                        <button onclick="checkInFromPlan('${p.id}', '${p.customer}', '${p.model}', '${p.goal}')" class="bg-indigo-600 text-white px-5 py-2 rounded-xl text-xs font-bold">ดำเนินการ</button>
+                        <h4 class="font-black text-gray-800 text-lg mb-1">${r[2]}</h4>
+                        <p class="text-xs text-indigo-400 font-bold uppercase tracking-widest mb-4">${r[3] || 'No Model'}</p>
+                        <div class="pt-4 border-t border-dashed flex justify-between items-center">
+                            <span class="text-[10px] text-gray-400 font-bold">LATEST VISIT</span>
+                            <span class="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[9px] font-black">SUCCESS</span>
+                        </div>
                     </div>`;
             });
         }
 
-        function checkInFromPlan(id, cust, model, goal) {
-            document.getElementById('form-title').innerText = "บันทึกกิจกรรม (ตามแผน)";
-            document.getElementById('logType').value = "Planned";
-            document.getElementById('planId').value = id;
-            document.getElementById('customerName').value = cust;
-            document.getElementById('modelName').value = model;
-            document.getElementById('subject').value = "เข้าพบตามแผน: " + goal;
-            autoCalculateVisit();
-            showPage('page-form');
-        }
-
-        // --- 3. SUBMISSION ---
-        function handleFileSelect() {
-            attachedFiles = Array.from(document.getElementById('fileInput').files).slice(0, 5);
-            document.getElementById('file-list').innerHTML = attachedFiles.map(f => `<span class="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-bold">${f.name}</span>`).join('');
-        }
-
-        async function readFile(file) {
-            return new Promise(resolve => {
-                const reader = new FileReader();
-                reader.onload = e => resolve({ name: file.name, data: e.target.result });
-                reader.readAsDataURL(file);
+        // --- 4. Timeline Modal ---
+        function openTimeline(name) {
+            document.getElementById('modal-cust-name').innerText = name;
+            const container = document.getElementById('timeline-content');
+            container.innerHTML = '';
+            
+            const history = allRecords.filter(r => r[2] === name).reverse();
+            history.forEach(r => {
+                container.innerHTML += `
+                    <div class="timeline-card">
+                        <div class="bg-slate-50 p-6 rounded-3xl">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-[10px] font-black text-indigo-600 uppercase">ครั้งที่ ${r[4]}</span>
+                                <span class="text-[10px] font-bold text-gray-400">${r[5]}</span>
+                            </div>
+                            <h5 class="font-bold text-gray-800 mb-2">${r[6]}</h5>
+                            <p class="text-sm text-gray-500 leading-relaxed">${r[8]}</p>
+                        </div>
+                    </div>`;
             });
+            document.getElementById('timeline-modal').style.display = 'flex';
         }
 
-        document.getElementById('salesForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const loader = document.getElementById('loader');
-            btn.disabled = true; loader.classList.remove('hidden');
-
-            const files = await Promise.all(attachedFiles.map(f => readFile(f)));
-            const payload = {
-                action: 'saveLog',
-                type: document.getElementById('logType').value,
-                planId: document.getElementById('planId').value,
-                customer: document.getElementById('customerName').value,
-                model: document.getElementById('modelName').value,
-                count: document.getElementById('visitCount').value,
-                date: document.getElementById('visitDate').value,
-                subject: document.getElementById('subject').value,
-                comment: document.getElementById('comment').value,
-                status: document.querySelector('input[name="status"]:checked').value,
-                files: files,
-                email: currentUser.email
-            };
-
-            try {
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                alert("✅ บันทึกสำเร็จ และปิดแผนงานนี้เรียบร้อย!");
-                location.reload();
-            } catch (err) { alert("Error"); btn.disabled = false; loader.classList.add('hidden'); }
-        });
-
-        document.getElementById('planForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const payload = {
-                action: 'savePlan',
-                customer: document.getElementById('planCustomer').value,
-                model: document.getElementById('planModel').value,
-                date: document.getElementById('planDate').value,
-                goal: document.getElementById('planGoal').value,
-                email: currentUser.email
-            };
-            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            alert("📅 วางแผนสำเร็จ!");
-            location.reload();
-        });
-
-        function autoCalculateVisit() {
-            const name = document.getElementById('customerName').value;
-            const count = allRecords.filter(r => r[2] === name).length;
-            document.getElementById('visitCount').value = count + 1;
+        function closeTimeline() { document.getElementById('timeline-modal').style.display = 'none'; }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); }
+        function showPage(id) {
+            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            toggleSidebar();
         }
 
-        function initCalendar() {
-            window.calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-                initialView: 'dayGridMonth',
-                locale: 'th',
-                events: []
-            });
-        }
-
-        function updateCalendarEvents() {
-            const evs = allPlans.map(p => ({ title: p.customer, start: p.date, backgroundColor: '#4f46e5' }));
-            window.calendar.removeAllEvents();
-            window.calendar.addEventSource(evs);
-        }
-
-        function updateDashboard() {
-            document.getElementById('stat-total').innerText = allRecords.length;
-            // ... (โค้ด render รายชื่อลูกค้าตามที่เคยทำไว้) ...
+        // --- 5. Export ---
+        function downloadPDF() {
+            const element = document.getElementById('timeline-content');
+            const name = document.getElementById('modal-cust-name').innerText;
+            html2pdf().from(element).save(`${name}_History.pdf`);
+            showToast("กำลังดาวน์โหลด PDF...");
         }
     </script>
 </body>
