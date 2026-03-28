@@ -3,133 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesFlow Pro | Advanced Tracking</title>
+    <title>SalesFlow Pro | สุดยอดระบบจัดการงานขาย</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Kanit', sans-serif; scroll-behavior: smooth; }
+        body { font-family: 'Kanit', sans-serif; overflow-x: hidden; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        /* Toast Animation */
-        #toast-container { position: fixed; top: 1rem; right: 1rem; z-index: 200; }
-        .toast { animation: slideIn 0.3s ease-out forwards; min-width: 250px; }
+        /* Toast Notification */
+        #toast-container { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 9999; }
+        .toast { animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; min-width: 280px; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .timeline-card { border-left: 3px solid #4f46e5; position: relative; padding-left: 1.5rem; }
-        .timeline-card::before { content: ''; position: absolute; left: -0.55rem; top: 1.25rem; width: 0.8rem; height: 0.8rem; background: #4f46e5; border-radius: 50%; border: 2px solid white; }
+        /* Timeline Style */
+        .timeline-card { border-left: 4px solid #4f46e5; position: relative; padding-left: 1.5rem; margin-bottom: 2rem; }
+        .timeline-card::before { content: ''; position: absolute; left: -0.65rem; top: 0.5rem; width: 1rem; height: 1rem; background: #4f46e5; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(79, 70, 229, 0.4); }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
 
     <div id="toast-container"></div>
 
-    <div id="login-overlay" class="fixed inset-0 bg-indigo-900 z-[100] flex items-center justify-center p-4">
-        <div class="bg-white p-10 rounded-[3rem] shadow-2xl text-center max-w-sm w-full border-4 border-indigo-100">
+    <div id="login-overlay" class="fixed inset-0 bg-indigo-950 z-[100] flex items-center justify-center p-4">
+        <div class="bg-white p-10 rounded-[3.5rem] shadow-2xl text-center max-w-sm w-full border-[6px] border-indigo-50">
             <div class="text-6xl mb-6">🚀</div>
-            <h2 class="text-3xl font-bold text-indigo-700 mb-2">SalesFlow</h2>
-            <p class="text-gray-400 mb-8 text-sm">เข้าใช้งานระบบจัดการงานขาย</p>
-            <div id="g_id_onload" data-client_id="YOUR_CLIENT_ID" data-callback="handleSignIn"></div>
+            <h2 class="text-3xl font-bold text-indigo-700 mb-2 italic">SalesFlow</h2>
+            <p class="text-gray-400 mb-8 text-sm font-medium">จัดการทุกดีลอย่างมืออาชีพ</p>
+            <div id="g_id_onload" data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com" data-callback="handleSignIn"></div>
             <div class="g_id_signin flex justify-center" data-type="standard" data-shape="pill"></div>
         </div>
     </div>
 
     <nav class="bg-white/90 backdrop-blur-md border-b p-4 sticky top-0 z-40 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-3">
-            <div class="bg-indigo-600 p-2 rounded-xl text-white font-bold shadow-lg shadow-indigo-200">SF</div>
+            <div class="bg-indigo-600 p-2.5 rounded-2xl text-white font-bold shadow-lg shadow-indigo-100">SF</div>
             <div>
-                <h1 class="font-bold text-gray-800 leading-none text-sm">SalesFlow <span class="text-indigo-500">Pro</span></h1>
-                <span id="user-display" class="text-[9px] text-gray-400 font-bold uppercase tracking-tighter">Authorized User</span>
+                <h1 class="font-bold text-gray-800 leading-none">SalesFlow <span class="text-indigo-500">Pro</span></h1>
+                <span id="user-display" class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Authorized</span>
             </div>
         </div>
-        <button onclick="toggleSidebar()" class="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition">
+        <button onclick="toggleSidebar()" class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-full transition">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 6h16M4 12h16m4 6h16"></path></svg>
         </button>
     </nav>
 
-    <div id="sidebar" class="fixed right-0 top-0 h-full w-72 bg-white z-[60] shadow-2xl translate-x-full p-8 transition-transform">
+    <div id="sidebar" class="fixed right-0 top-0 h-full w-72 bg-white z-[60] shadow-2xl translate-x-full p-8 transition-transform duration-300 ease-in-out">
         <div class="flex justify-between items-center mb-10 border-b pb-4">
-            <span class="text-indigo-600 font-black text-xs tracking-widest uppercase">Navigation</span>
-            <button onclick="toggleSidebar()" class="text-gray-400">✕</button>
+            <span class="text-indigo-600 font-black text-xs tracking-widest uppercase">เมนูหลัก</span>
+            <button onclick="toggleSidebar()" class="text-gray-300 hover:text-red-500">✕</button>
         </div>
         <nav class="space-y-3">
-            <button onclick="showPage('page-dashboard')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-4 text-gray-600 font-bold">📊 Dashboard</button>
-            <button onclick="showPage('page-profile')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-4 text-gray-600 font-bold">👤 My Profile</button>
-            <button onclick="showPage('page-form')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-4 text-gray-600 font-bold">➕ New Activity</button>
-            <button onclick="showPage('page-plan-list')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 transition flex items-center gap-4 text-gray-600 font-bold">📅 Scheduled Plans</button>
+            <button onclick="showPage('page-dashboard')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 flex items-center gap-4 text-gray-600 font-bold transition">📊 แดชบอร์ดสรุปผล</button>
+            <button onclick="showPage('page-profile')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 flex items-center gap-4 text-gray-600 font-bold transition">👤 ข้อมูลส่วนตัว</button>
+            <button onclick="showPage('page-form')" class="w-full text-left p-4 rounded-2xl hover:bg-indigo-50 flex items-center gap-4 text-gray-600 font-bold transition">➕ บันทึกงานใหม่</button>
             <div class="pt-10">
-                <button onclick="logout()" class="w-full text-left p-4 rounded-2xl text-red-400 hover:bg-red-50 transition flex items-center gap-4 font-bold">🚪 Logout</button>
+                <button onclick="logout()" class="w-full text-left p-4 rounded-2xl text-red-400 hover:bg-red-50 flex items-center gap-4 font-bold transition">🚪 ออกจากระบบ</button>
             </div>
         </nav>
     </div>
 
     <section id="page-profile" class="tab-content p-6 max-w-2xl mx-auto">
-        <div class="bg-white rounded-[3rem] shadow-xl p-10 text-center border-t-8 border-indigo-500 relative">
-            <div class="w-24 h-24 bg-indigo-50 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl">👤</div>
-            <h2 id="prof-name" class="text-2xl font-black text-gray-800">...</h2>
-            <p id="prof-email" class="text-gray-400 text-sm mb-8">...</p>
+        <div class="bg-white rounded-[3.5rem] shadow-xl p-10 text-center border-b-[10px] border-indigo-600 relative overflow-hidden">
+            <div class="w-24 h-24 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl text-white shadow-xl">👤</div>
+            <h2 id="prof-name" class="text-3xl font-black text-gray-800">กำลังดึงข้อมูล...</h2>
+            <p id="prof-email" class="text-gray-400 text-sm mb-10 tracking-tight">-</p>
             <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-50 p-6 rounded-3xl text-left"><span class="text-[9px] font-bold text-gray-400 uppercase">Role</span><p class="font-bold text-indigo-600">Sales Professional</p></div>
-                <div class="bg-slate-50 p-6 rounded-3xl text-left"><span class="text-[9px] font-bold text-gray-400 uppercase">Status</span><p class="font-bold text-green-500">Active (30 Days)</p></div>
+                <div class="bg-indigo-50/50 p-6 rounded-[2rem] text-left border border-indigo-100">
+                    <span class="text-[10px] font-bold text-indigo-400 uppercase">ตำแหน่ง</span>
+                    <p class="font-bold text-indigo-900">Sales Professional</p>
+                </div>
+                <div class="bg-green-50/50 p-6 rounded-[2rem] text-left border border-green-100">
+                    <span class="text-[10px] font-bold text-green-400 uppercase">สถานะ</span>
+                    <p class="font-bold text-green-700">Online (30 Days)</p>
+                </div>
             </div>
         </div>
     </section>
 
     <section id="page-dashboard" class="tab-content active p-6 max-w-6xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
             <div>
-                <h2 class="text-4xl font-black text-gray-800 tracking-tighter">Dashboard</h2>
-                <p class="text-gray-400 text-sm">ติดตามกิจกรรม 10 รายล่าสุดของคุณ</p>
+                <h2 class="text-4xl font-black text-gray-800 tracking-tighter">Activity Overview</h2>
+                <p class="text-gray-400 text-sm font-medium">แสดงรายชื่อลูกค้า 10 รายล่าสุดของคุณ</p>
             </div>
-            
-            <div class="relative w-full md:w-80">
-                <input type="text" id="dashboardSearch" oninput="filterDashboard()" 
+            <div class="relative w-full md:w-96">
+                <input type="text" id="dbSearch" oninput="filterDashboard()" 
                        placeholder="ค้นหาลูกค้า, โมเดล, หรือหัวข้อ..." 
-                       class="w-full p-4 pl-12 bg-white rounded-2xl shadow-sm border-none outline-none focus:ring-2 focus:ring-indigo-400 text-sm font-medium">
-                <div class="absolute left-4 top-4 text-gray-300">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                       class="w-full p-5 pl-14 bg-white rounded-[2rem] shadow-sm border-2 border-transparent focus:border-indigo-400 outline-none font-bold transition">
+                <div class="absolute left-6 top-5.5 text-indigo-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
             </div>
         </div>
 
-        <div id="unique-customer-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="customer-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             </div>
     </section>
 
-    <div id="timeline-modal" class="fixed inset-0 bg-indigo-900/40 z-[100] hidden items-center justify-center p-4 backdrop-blur-md">
-        <div class="bg-white w-full max-w-3xl max-h-[85vh] rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col">
-            <div class="p-8 border-b flex justify-between items-center bg-indigo-50/50">
+    <section id="page-form" class="tab-content p-4 max-w-2xl mx-auto">
+        <div class="bg-white rounded-[3.5rem] shadow-2xl overflow-hidden border">
+            <div class="bg-indigo-600 p-8 text-white">
+                <h2 class="text-2xl font-black">บันทึกกิจกรรมใหม่</h2>
+                <p class="text-indigo-200 text-[10px] uppercase font-bold tracking-widest mt-1">Activity Logging System</p>
+            </div>
+            <form id="salesForm" class="p-8 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="customerName" placeholder="ชื่อลูกค้า/บริษัท" class="w-full p-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-indigo-400 font-bold" required>
+                    <input type="text" id="modelName" placeholder="รุ่นสินค้า (Model)" class="w-full p-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-indigo-400 font-bold">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="date" id="visitDate" class="w-full p-4 rounded-2xl bg-gray-50 border-none font-bold">
+                    <input type="number" id="visitCount" placeholder="ครั้งที่เข้าพบ" class="w-full p-4 rounded-2xl bg-indigo-50 border-none text-center font-black text-indigo-600">
+                </div>
+                <input type="text" id="subject" placeholder="หัวข้อการเข้าพบ" class="w-full p-4 rounded-2xl bg-gray-50 border-none font-bold" required>
+                <textarea id="comment" placeholder="รายละเอียดสรุป..." class="w-full p-4 rounded-2xl h-32 bg-gray-50 border-none font-medium"></textarea>
+                
+                <div class="p-5 border-4 border-dashed border-indigo-50 rounded-[2rem] text-center">
+                    <input type="file" id="photoInput" class="hidden" accept="image/*" onchange="previewImg(this)">
+                    <button type="button" onclick="document.getElementById('photoInput').click()" class="text-indigo-600 font-black text-sm">📸 แนบรูปภาพผลการดำเนินงาน</button>
+                    <img id="imgPreview" class="mt-4 mx-auto rounded-2xl max-h-40 hidden shadow-lg">
+                </div>
+
+                <div class="flex gap-3">
+                    <label class="flex-1 cursor-pointer"><input type="radio" name="status" value="ตามเป้า" class="peer hidden" checked><div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-green-500 peer-checked:text-white text-center text-xs font-black transition">ตามเป้า</div></label>
+                    <label class="flex-1 cursor-pointer"><input type="radio" name="status" value="รอผล" class="peer hidden"><div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-amber-500 peer-checked:text-white text-center text-xs font-black transition">รอผล</div></label>
+                    <label class="flex-1 cursor-pointer"><input type="radio" name="status" value="มีปัญหา" class="peer hidden"><div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-red-500 peer-checked:text-white text-center text-xs font-black transition">ปัญหา</div></label>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 text-white font-black py-5 rounded-[1.5rem] shadow-xl hover:bg-indigo-700 transition active:scale-95">
+                    บันทึกข้อมูลเข้า Sheet
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <div id="timeline-modal" class="fixed inset-0 bg-indigo-950/60 z-[100] hidden items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white w-full max-w-2xl max-h-[85vh] rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col scale-in">
+            <div class="p-8 border-b flex justify-between items-center bg-slate-50/50">
                 <div>
                     <h2 id="modal-cust-name" class="text-2xl font-black text-indigo-900 leading-none">-</h2>
-                    <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mt-2">Activity Timeline</p>
+                    <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mt-2">Customer Activity History</p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="downloadPDF()" class="bg-white p-3 rounded-xl shadow-sm hover:bg-indigo-600 hover:text-white transition text-xs font-black">PDF</button>
-                    <button onclick="closeTimeline()" class="bg-white p-3 rounded-xl shadow-sm text-gray-400 hover:text-red-500 transition text-sm">✕</button>
+                    <button onclick="downloadPDF()" class="bg-white p-3 rounded-xl shadow-sm hover:bg-indigo-600 hover:text-white transition text-[10px] font-black">Export PDF</button>
+                    <button onclick="closeTimeline()" class="bg-white p-3 rounded-xl shadow-sm text-gray-400 hover:text-red-500 transition text-sm px-4">✕</button>
                 </div>
             </div>
-            <div id="timeline-content" class="flex-1 overflow-y-auto p-10 space-y-8 bg-white">
+            <div id="timeline-content" class="flex-1 overflow-y-auto p-10 bg-white">
                 </div>
         </div>
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw5gWKUSrmQMivgnSTDsiCubx0toR1lRORjij5rj3iSvyWJpIT1UYr0lPjwfpakbmcr/exec"; 
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx7dVOrgJNZJkVlLeJlUD-OGKsrMRrWciagXrNpQqpsLbNTjrUV78XCIfVbcLeZHXMT/exec"; 
         let allRecords = [];
         let currentUser = null;
 
-        // --- 1. Notification System (Toast) ---
-        function showToast(message, type = 'success') {
+        // --- 1. Notification (Toast) ---
+        function showToast(msg, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
-            toast.className = `toast ${bgColor} text-white px-6 py-4 rounded-2xl shadow-2xl mb-3 flex items-center gap-3 font-bold text-sm`;
-            toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> ${message}`;
+            const bg = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+            toast.className = `toast ${bg} text-white px-6 py-4 rounded-2xl shadow-2xl mb-3 flex items-center gap-4 font-bold text-sm border-2 border-white/20`;
+            toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> ${msg}`;
             container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3000);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
         }
 
-        // --- 2. Auth System (30 Days) ---
+        // --- 2. Auth (30 Days Persistence) ---
         window.onload = () => {
             const saved = localStorage.getItem('sales_user_30d');
             if (saved) {
@@ -137,12 +179,11 @@
                 if (new Date().getTime() < user.expiry) {
                     currentUser = user;
                     document.getElementById('login-overlay').style.display = 'none';
-                    document.getElementById('user-display').innerText = user.name;
-                    document.getElementById('prof-name').innerText = user.name;
-                    document.getElementById('prof-email').innerText = user.email;
+                    syncUI(user);
                     fetchInitialData();
                 } else { localStorage.removeItem('sales_user_30d'); }
             }
+            document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
         };
 
         function handleSignIn(response) {
@@ -150,90 +191,138 @@
             const expiry = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
             currentUser = { email: payload.email, name: payload.name, expiry: expiry };
             localStorage.setItem('sales_user_30d', JSON.stringify(currentUser));
-            showToast("ยินดีต้อนรับ! ล็อกอินสำเร็จ");
-            setTimeout(() => location.reload(), 1000);
+            showToast("ล็อกอินสำเร็จ! ระบบจะจำคุณไว้ 30 วัน");
+            setTimeout(() => location.reload(), 800);
         }
 
-        function logout() { 
-            localStorage.removeItem('sales_user_30d'); 
-            showToast("ออกจากระบบแล้ว");
-            setTimeout(() => location.reload(), 1000); 
+        function syncUI(user) {
+            document.getElementById('user-display').innerText = user.name;
+            document.getElementById('prof-name').innerText = user.name;
+            document.getElementById('prof-email').innerText = user.email;
         }
 
-        // --- 3. Dashboard Filter & Rendering ---
+        function logout() { localStorage.removeItem('sales_user_30d'); location.reload(); }
+
+        // --- 3. Dashboard & Search ---
         async function fetchInitialData() {
             try {
                 const res = await fetch(`${WEB_APP_URL}?action=getAll&email=${currentUser.email}`);
                 const data = await res.json();
                 allRecords = data.records || [];
-                renderUniqueDashboard(allRecords);
-            } catch (e) { showToast("ไม่สามารถโหลดข้อมูลได้", "error"); }
+                renderDashboard(allRecords);
+            } catch (e) { showToast("โหลดข้อมูลล้มเหลว", "error"); }
         }
 
         function filterDashboard() {
-            const term = document.getElementById('dashboardSearch').value.toLowerCase();
-            // ค้นหาทั้งชื่อลูกค้า (Col C), Model (Col D), หัวข้อ (Col G)
+            const q = document.getElementById('dbSearch').value.toLowerCase();
             const filtered = allRecords.filter(r => 
-                r[2].toLowerCase().includes(term) || 
-                r[3].toLowerCase().includes(term) || 
-                r[6].toLowerCase().includes(term)
+                r[2].toLowerCase().includes(q) || r[3].toLowerCase().includes(q) || r[6].toLowerCase().includes(q)
             );
-            renderUniqueDashboard(filtered);
+            renderDashboard(filtered);
         }
 
-        function renderUniqueDashboard(data) {
-            const list = document.getElementById('unique-customer-list');
-            list.innerHTML = '';
-            
-            const unique = [];
-            const seen = new Set();
-            // กรอง 10 รายล่าสุดที่ไม่ซ้ำชื่อลูกค้า
+        function renderDashboard(data) {
+            const grid = document.getElementById('customer-grid');
+            grid.innerHTML = '';
+            const unique = []; const seen = new Set();
             for (let i = data.length - 1; i >= 0; i--) {
-                const name = data[i][2];
-                if (!seen.has(name) && unique.length < 10) {
-                    seen.add(name);
-                    unique.push(data[i]);
+                if (!seen.has(data[i][2]) && unique.length < 10) {
+                    seen.add(data[i][2]); unique.push(data[i]);
                 }
             }
-
             unique.forEach(r => {
-                list.innerHTML += `
-                    <div onclick="openTimeline('${r[2]}')" class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:scale-[1.02] transition cursor-pointer group">
+                grid.innerHTML += `
+                    <div onclick="openTimeline('${r[2]}')" class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition duration-300 cursor-pointer group">
                         <div class="flex justify-between items-start mb-6">
-                            <div class="bg-indigo-50 p-4 rounded-2xl text-2xl group-hover:bg-indigo-600 transition">🏢</div>
+                            <div class="bg-indigo-50 p-4 rounded-2xl text-2xl group-hover:bg-indigo-600 transition duration-300">🏢</div>
                             <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">${r[5]}</span>
                         </div>
-                        <h4 class="font-black text-gray-800 text-lg mb-1">${r[2]}</h4>
-                        <p class="text-xs text-indigo-400 font-bold uppercase tracking-widest mb-4">${r[3] || 'No Model'}</p>
-                        <div class="pt-4 border-t border-dashed flex justify-between items-center">
-                            <span class="text-[10px] text-gray-400 font-bold">LATEST VISIT</span>
-                            <span class="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[9px] font-black">SUCCESS</span>
+                        <h4 class="font-black text-gray-800 text-lg leading-tight mb-1">${r[2]}</h4>
+                        <p class="text-xs text-indigo-400 font-bold uppercase tracking-widest mb-6">${r[3] || 'General'}</p>
+                        <div class="pt-5 border-t border-dashed flex justify-between items-center">
+                            <span class="text-[9px] text-gray-400 font-black">VIEW HISTORY</span>
+                            <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition">→</div>
                         </div>
                     </div>`;
             });
         }
 
-        // --- 4. Timeline Modal ---
+        // --- 4. Form Handling (No Logout After Save) ---
+        function previewImg(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => { 
+                    const img = document.getElementById('imgPreview');
+                    img.src = e.target.result; img.classList.remove('hidden');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        document.getElementById('salesForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+
+            const fileInput = document.getElementById('photoInput');
+            let files = [];
+            if (fileInput.files.length > 0) {
+                const base64 = document.getElementById('imgPreview').src;
+                files.push({ name: fileInput.files[0].name, data: base64 });
+            }
+
+            const payload = {
+                action: 'saveLog',
+                customer: document.getElementById('customerName').value,
+                model: document.getElementById('modelName').value,
+                count: document.getElementById('visitCount').value,
+                date: document.getElementById('visitDate').value,
+                subject: document.getElementById('subject').value,
+                comment: document.getElementById('comment').value,
+                status: document.querySelector('input[name="status"]:checked').value,
+                files: files,
+                email: currentUser.email
+            };
+
+            try {
+                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                showToast("บันทึกสำเร็จ! ข้อมูลถูกอัปเดตแล้ว");
+                document.getElementById('salesForm').reset();
+                document.getElementById('imgPreview').classList.add('hidden');
+                await fetchInitialData();
+                showPage('page-dashboard');
+            } catch (err) { showToast("เกิดข้อผิดพลาดในการเชื่อมต่อ", "error"); }
+            finally { btn.disabled = false; btn.innerText = "บันทึกข้อมูลเข้า Sheet"; }
+        });
+
+        // --- 5. Timeline & Export ---
         function openTimeline(name) {
             document.getElementById('modal-cust-name').innerText = name;
             const container = document.getElementById('timeline-content');
             container.innerHTML = '';
-            
             const history = allRecords.filter(r => r[2] === name).reverse();
             history.forEach(r => {
                 container.innerHTML += `
                     <div class="timeline-card">
-                        <div class="bg-slate-50 p-6 rounded-3xl">
-                            <div class="flex justify-between mb-2">
-                                <span class="text-[10px] font-black text-indigo-600 uppercase">ครั้งที่ ${r[4]}</span>
+                        <div class="bg-slate-50 p-6 rounded-3xl border border-gray-100 shadow-sm">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter">ครั้งที่ ${r[4]}</span>
                                 <span class="text-[10px] font-bold text-gray-400">${r[5]}</span>
                             </div>
-                            <h5 class="font-bold text-gray-800 mb-2">${r[6]}</h5>
-                            <p class="text-sm text-gray-500 leading-relaxed">${r[8]}</p>
+                            <h5 class="font-black text-gray-800 mb-2">${r[6]}</h5>
+                            <p class="text-sm text-gray-500 leading-relaxed mb-4">${r[8]}</p>
+                            ${r[10] ? `<a href="${r[10]}" target="_blank" class="text-indigo-500 text-[10px] font-bold underline">📎 ดูรูปภาพประกอบ</a>` : ''}
                         </div>
                     </div>`;
             });
             document.getElementById('timeline-modal').style.display = 'flex';
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('timeline-content');
+            const name = document.getElementById('modal-cust-name').innerText;
+            html2pdf().from(element).save(`${name}_Timeline.pdf`);
+            showToast("กำลังสร้างไฟล์ PDF...");
         }
 
         function closeTimeline() { document.getElementById('timeline-modal').style.display = 'none'; }
@@ -242,14 +331,6 @@
             document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             toggleSidebar();
-        }
-
-        // --- 5. Export ---
-        function downloadPDF() {
-            const element = document.getElementById('timeline-content');
-            const name = document.getElementById('modal-cust-name').innerText;
-            html2pdf().from(element).save(`${name}_History.pdf`);
-            showToast("กำลังดาวน์โหลด PDF...");
         }
     </script>
 </body>
