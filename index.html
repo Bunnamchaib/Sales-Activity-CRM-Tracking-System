@@ -19,24 +19,29 @@
         /* Timeline Path */
         .timeline-card { border-left: 4px solid #4f46e5; position: relative; padding-left: 1.5rem; margin-bottom: 2rem; }
         .timeline-card::before { content: ''; position: absolute; left: -0.65rem; top: 0.5rem; width: 1rem; height: 1rem; background: #4f46e5; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(79, 70, 229, 0.4); }
+        /* Timeline modal fix */
+        #timeline-modal { display: none; }
+        #timeline-modal.open { display: flex; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
 
     <div id="toast-container"></div>
 
+    <!-- ===== LOGIN OVERLAY ===== -->
     <div id="login-overlay" class="fixed inset-0 bg-indigo-950 z-[100] flex items-center justify-center p-4">
         <div class="bg-white p-10 rounded-[3.5rem] shadow-2xl text-center max-w-sm w-full border-[6px] border-indigo-50">
             <div class="text-6xl mb-6">🚀</div>
             <h2 class="text-3xl font-bold text-indigo-700 mb-2 italic">SalesFlow</h2>
             <p class="text-gray-400 mb-8 text-sm font-medium">จัดการทุกดีลอย่างมืออาชีพ</p>
-            <div id="g_id_onload" 
-                 data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com" 
+            <div id="g_id_onload"
+                 data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com"
                  data-callback="handleSignIn"></div>
             <div class="g_id_signin flex justify-center" data-type="standard" data-shape="pill"></div>
         </div>
     </div>
 
+    <!-- ===== NAVBAR ===== -->
     <nav class="bg-white/90 backdrop-blur-md border-b p-4 sticky top-0 z-40 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-3">
             <div class="bg-indigo-600 p-2.5 rounded-2xl text-white font-bold shadow-lg shadow-indigo-100">SF</div>
@@ -46,10 +51,11 @@
             </div>
         </div>
         <button onclick="toggleSidebar()" class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-full transition">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 6h16M4 12h16m4 6h16"></path></svg>
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
     </nav>
 
+    <!-- ===== SIDEBAR ===== -->
     <div id="sidebar" class="fixed right-0 top-0 h-full w-72 bg-white z-[60] shadow-2xl translate-x-full p-8 transition-transform duration-300 ease-in-out">
         <div class="flex justify-between items-center mb-10 border-b pb-4">
             <span class="text-indigo-600 font-black text-xs tracking-widest uppercase">เมนูหลัก</span>
@@ -65,6 +71,7 @@
         </nav>
     </div>
 
+    <!-- ===== PAGE: PROFILE ===== -->
     <section id="page-profile" class="tab-content p-6 max-w-2xl mx-auto">
         <div class="bg-white rounded-[3.5rem] shadow-xl p-10 text-center border-b-[10px] border-indigo-600 relative overflow-hidden">
             <div class="w-24 h-24 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl text-white shadow-xl">👤</div>
@@ -77,12 +84,13 @@
                 </div>
                 <div class="bg-green-50/50 p-6 rounded-[2rem] text-left border border-green-100">
                     <span class="text-[10px] font-bold text-green-400 uppercase">สถานะ</span>
-                    <p class="font-bold text-green-700">Online (30 Days)</p>
+                    <p id="prof-status" class="font-bold text-green-700">Online (30 Days)</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- ===== PAGE: DASHBOARD ===== -->
     <section id="page-dashboard" class="tab-content active p-6 max-w-6xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
             <div>
@@ -90,17 +98,33 @@
                 <p class="text-gray-400 text-sm font-medium">สรุปกิจกรรมล่าสุด 10 รายการ (ไม่ซ้ำลูกค้า)</p>
             </div>
             <div class="relative w-full md:w-96">
-                <input type="text" id="dbSearch" oninput="filterDashboard()" 
-                       placeholder="ค้นหาลูกค้า, โมเดล, หรือหัวข้อ..." 
+                <input type="text" id="dbSearch" oninput="filterDashboard()"
+                       placeholder="ค้นหาลูกค้า, โมเดล, หรือหัวข้อ..."
                        class="w-full p-5 pl-14 bg-white rounded-[2rem] shadow-sm border-2 border-transparent focus:border-indigo-400 outline-none font-bold transition">
-                <div class="absolute left-6 top-5.5 text-indigo-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <div class="absolute left-6 top-5 text-indigo-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
+            </div>
+        </div>
+        <!-- Summary Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border text-center">
+                <p class="text-3xl font-black text-indigo-600" id="stat-total">0</p>
+                <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">กิจกรรมทั้งหมด</p>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border text-center">
+                <p class="text-3xl font-black text-green-600" id="stat-success">0</p>
+                <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">ตามเป้า</p>
+            </div>
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border text-center">
+                <p class="text-3xl font-black text-red-400" id="stat-issue">0</p>
+                <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">มีปัญหา</p>
             </div>
         </div>
         <div id="customer-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
 
+    <!-- ===== PAGE: FORM ===== -->
     <section id="page-form" class="tab-content p-4 max-w-2xl mx-auto">
         <div class="bg-white rounded-[3.5rem] shadow-2xl overflow-hidden border">
             <div class="bg-indigo-600 p-8 text-white">
@@ -114,28 +138,45 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <input type="date" id="visitDate" class="w-full p-4 rounded-2xl bg-gray-50 border-none font-bold">
-                    <input type="number" id="visitCount" placeholder="ครั้งที่" class="w-full p-4 rounded-2xl bg-indigo-50 border-none text-center font-black text-indigo-600">
+                    <input type="number" id="visitCount" placeholder="ครั้งที่" min="1" class="w-full p-4 rounded-2xl bg-indigo-50 border-none text-center font-black text-indigo-600">
                 </div>
                 <input type="text" id="subject" placeholder="หัวข้อการเข้าพบ" class="w-full p-4 rounded-2xl bg-gray-50 border-none font-bold" required>
-                <textarea id="comment" placeholder="รายละเอียด..." class="w-full p-4 rounded-2xl h-32 bg-gray-50 border-none font-medium"></textarea>
-                
-                <div class="p-5 border-4 border-dashed border-indigo-50 rounded-[2rem] text-center">
+                <textarea id="comment" placeholder="รายละเอียด / บันทึกเพิ่มเติม..." class="w-full p-4 rounded-2xl h-32 bg-gray-50 border-none font-medium resize-none"></textarea>
+
+                <!-- ===== แนบรูปภาพ (ฟีเจอร์สำคัญ!) ===== -->
+                <div class="p-5 border-4 border-dashed border-indigo-100 rounded-[2rem] text-center hover:border-indigo-300 transition">
                     <input type="file" id="photoInput" class="hidden" accept="image/*" onchange="previewImg(this)">
-                    <button type="button" onclick="document.getElementById('photoInput').click()" class="text-indigo-600 font-bold">📸 แนบรูปภาพผลงาน</button>
-                    <img id="imgPreview" class="mt-4 mx-auto rounded-2xl max-h-40 hidden shadow-lg">
+                    <button type="button" onclick="document.getElementById('photoInput').click()"
+                            class="text-indigo-600 font-bold text-sm hover:text-indigo-800 transition">
+                        📸 แนบรูปภาพผลงาน
+                    </button>
+                    <p class="text-[10px] text-gray-300 mt-1">คลิกเพื่อเลือกรูปจากอุปกรณ์</p>
+                    <img id="imgPreview" class="mt-4 mx-auto rounded-2xl max-h-48 hidden shadow-lg border border-indigo-100">
+                    <button type="button" id="removeImgBtn" onclick="removeImg()" class="hidden mt-2 text-[10px] text-red-400 font-bold hover:text-red-600">✕ ลบรูป</button>
                 </div>
 
+                <!-- ===== สถานะผลลัพธ์ ===== -->
                 <div class="flex gap-3">
-                    <label class="flex-1 cursor-pointer"><input type="radio" name="status" value="ตามเป้า" class="peer hidden" checked><div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-green-500 peer-checked:text-white text-center text-xs font-bold">ตามเป้า</div></label>
-                    <label class="flex-1 cursor-pointer"><input type="radio" name="status" value="มีปัญหา" class="peer hidden"><div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-red-500 peer-checked:text-white text-center text-xs font-bold">มีปัญหา</div></label>
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="status" value="ตามเป้า" class="peer hidden" checked>
+                        <div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-green-500 peer-checked:text-white text-center text-xs font-bold transition">✅ ตามเป้า</div>
+                    </label>
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="status" value="มีปัญหา" class="peer hidden">
+                        <div class="p-4 rounded-2xl bg-slate-50 peer-checked:bg-red-500 peer-checked:text-white text-center text-xs font-bold transition">⚠️ มีปัญหา</div>
+                    </label>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 text-white font-black py-5 rounded-[1.5rem] shadow-xl hover:bg-indigo-700 transition">บันทึกข้อมูลเข้า Sheet</button>
+                <button type="submit" id="submitBtn"
+                        class="w-full bg-indigo-600 text-white font-black py-5 rounded-[1.5rem] shadow-xl hover:bg-indigo-700 transition text-base">
+                    💾 บันทึกข้อมูลเข้า Sheet
+                </button>
             </form>
         </div>
     </section>
 
-    <div id="timeline-modal" class="fixed inset-0 bg-indigo-950/60 z-[100] hidden items-center justify-center p-4 backdrop-blur-md">
+    <!-- ===== TIMELINE MODAL ===== -->
+    <div id="timeline-modal" class="fixed inset-0 bg-indigo-950/60 z-[100] items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-white w-full max-w-2xl max-h-[85vh] rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col">
             <div class="p-8 border-b flex justify-between items-center bg-slate-50/50">
                 <div>
@@ -143,72 +184,111 @@
                     <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mt-2">Customer Activity History</p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="downloadPDF()" class="bg-white p-3 rounded-xl shadow-sm hover:bg-indigo-600 hover:text-white transition text-[10px] font-bold">PDF</button>
-                    <button onclick="downloadMD()" class="bg-white p-3 rounded-xl shadow-sm hover:bg-indigo-600 hover:text-white transition text-[10px] font-bold">MD</button>
-                    <button onclick="closeTimeline()" class="bg-white p-3 rounded-xl shadow-sm text-gray-400 hover:text-red-500 transition text-sm px-4">✕</button>
+                    <button onclick="downloadPDF()" class="bg-white p-3 rounded-xl shadow-sm hover:bg-indigo-600 hover:text-white transition text-[10px] font-bold border">📄 PDF</button>
+                    <button onclick="downloadMD()" class="bg-white p-3 rounded-xl shadow-sm hover:bg-indigo-600 hover:text-white transition text-[10px] font-bold border">📝 MD</button>
+                    <button onclick="closeTimeline()" class="bg-white p-3 px-4 rounded-xl shadow-sm text-gray-400 hover:text-red-500 transition text-sm border">✕</button>
                 </div>
             </div>
             <div id="timeline-content" class="flex-1 overflow-y-auto p-10 bg-white"></div>
         </div>
     </div>
 
+    <!-- ===== JAVASCRIPT ===== -->
     <script>
-        // --- ส่วนสำคัญ: ห้ามลืมเปลี่ยน WEB_APP_URL ของคุณที่ Deploy จาก Code.gs ---
-        
+        // ============================================================
+        //  ⚠️  สำคัญมาก! เปลี่ยน URL นี้เป็น Web App URL ของคุณ
+        //  วิธีได้ URL: Google Apps Script > Deploy > Manage deployments
+        // ============================================================
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz5vgUF8avEPs0Fqy2k8dF1gOy2BdXIiHwmlWUCnkv0494HY_1FGdQlkn7qIKVHMayr/exec";
+
         let allRecords = [];
         let currentUser = null;
 
+        // ===== TOAST =====
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const bg = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+            const bg = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-yellow-400';
             toast.className = `toast ${bg} text-white px-6 py-4 rounded-2xl shadow-2xl mb-3 flex items-center gap-4 font-bold text-sm`;
-            toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> ${msg}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</span> ${msg}`;
             container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
+            setTimeout(() => { toast.style.transition = 'opacity 0.4s'; toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
         }
 
+        // ===== INIT =====
         window.onload = () => {
+            document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
             const saved = localStorage.getItem('sales_user_30d');
             if (saved) {
-                const user = JSON.parse(saved);
-                if (new Date().getTime() < user.expiry) {
-                    currentUser = user;
-                    document.getElementById('login-overlay').style.display = 'none';
-                    syncUI(user);
-                    fetchInitialData();
-                } else { localStorage.removeItem('sales_user_30d'); }
+                try {
+                    const user = JSON.parse(saved);
+                    if (new Date().getTime() < user.expiry) {
+                        currentUser = user;
+                        document.getElementById('login-overlay').style.display = 'none';
+                        syncUI(user);
+                        fetchInitialData();
+                    } else {
+                        localStorage.removeItem('sales_user_30d');
+                        showToast("Session หมดอายุ กรุณาเข้าสู่ระบบใหม่", "warning");
+                    }
+                } catch(e) { localStorage.removeItem('sales_user_30d'); }
             }
-            document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
         };
 
+        // ===== GOOGLE SIGN IN =====
         function handleSignIn(response) {
-            const payload = JSON.parse(atob(response.credential.split('.')[1]));
-            const expiry = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
-            currentUser = { email: payload.email, name: payload.name, expiry: expiry };
-            localStorage.setItem('sales_user_30d', JSON.stringify(currentUser));
-            showToast("เข้าสู่ระบบสำเร็จ!");
-            setTimeout(() => location.reload(), 800);
+            try {
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                const expiry = new Date().getTime() + (30 * 24 * 60 * 60 * 1000); // 30 วัน
+                currentUser = { email: payload.email, name: payload.name, expiry: expiry };
+                localStorage.setItem('sales_user_30d', JSON.stringify(currentUser));
+                showToast(`ยินดีต้อนรับ ${payload.name}! 🎉`);
+                setTimeout(() => location.reload(), 1000);
+            } catch(e) {
+                showToast("เข้าสู่ระบบล้มเหลว กรุณาลองใหม่", "error");
+            }
         }
 
+        // ===== UI SYNC =====
         function syncUI(user) {
             document.getElementById('user-display').innerText = user.name;
             document.getElementById('prof-name').innerText = user.name;
             document.getElementById('prof-email').innerText = user.email;
+            // แสดงวันที่ session หมดอายุ
+            const expDate = new Date(user.expiry).toLocaleDateString('th-TH');
+            document.getElementById('prof-status').innerText = `Online ถึง ${expDate}`;
         }
 
+        // ===== FETCH DATA =====
         async function fetchInitialData() {
             try {
                 const res = await fetch(`${WEB_APP_URL}?action=getAll&email=${currentUser.email}`);
+                if (!res.ok) throw new Error("HTTP " + res.status);
                 const data = await res.json();
                 allRecords = data.records || [];
+                updateStats(allRecords);
                 renderDashboard(allRecords);
-            } catch (e) { showToast("โหลดข้อมูลล้มเหลว", "error"); }
+            } catch (e) {
+                showToast("โหลดข้อมูลล้มเหลว — ตรวจสอบ WEB_APP_URL", "error");
+                console.error("Fetch error:", e);
+            }
         }
 
+        // ===== STATS =====
+        function updateStats(data) {
+            document.getElementById('stat-total').innerText = data.length;
+            document.getElementById('stat-success').innerText = data.filter(r => r[9] === 'ตามเป้า').length;
+            document.getElementById('stat-issue').innerText = data.filter(r => r[9] === 'มีปัญหา').length;
+        }
+
+        // ===== RENDER DASHBOARD =====
         function renderDashboard(data) {
             const grid = document.getElementById('customer-grid');
             grid.innerHTML = '';
+            if (data.length === 0) {
+                grid.innerHTML = '<div class="col-span-3 text-center text-gray-300 py-20 font-bold">ยังไม่มีข้อมูล หรือไม่พบผลการค้นหา</div>';
+                return;
+            }
             const unique = []; const seen = new Set();
             for (let i = data.length - 1; i >= 0; i--) {
                 if (!seen.has(data[i][2]) && unique.length < 10) {
@@ -216,117 +296,215 @@
                 }
             }
             unique.forEach(r => {
+                const statusColor = r[9] === 'ตามเป้า' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600';
                 grid.innerHTML += `
-                    <div onclick="openTimeline('${r[2]}')" class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-2xl transition cursor-pointer group">
+                    <div onclick="openTimeline('${r[2].replace(/'/g, "\\'")}')"
+                         class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-2xl transition cursor-pointer group">
                         <div class="flex justify-between items-start mb-6">
                             <div class="bg-indigo-50 p-4 rounded-2xl text-2xl group-hover:bg-indigo-600 group-hover:text-white transition">🏢</div>
-                            <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">${r[5]}</span>
+                            <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">${r[5] || ''}</span>
                         </div>
                         <h4 class="font-black text-gray-800 text-lg leading-tight mb-1">${r[2]}</h4>
-                        <p class="text-xs text-indigo-400 font-bold uppercase tracking-widest mb-6">${r[3] || 'General'}</p>
-                        <div class="pt-5 border-t border-dashed flex justify-between items-center text-[9px] text-gray-400 font-black">
+                        <p class="text-xs text-indigo-400 font-bold uppercase tracking-widest mb-3">${r[3] || 'General'}</p>
+                        <span class="text-[9px] font-bold px-3 py-1 rounded-full ${statusColor}">${r[9] || '-'}</span>
+                        <div class="pt-5 mt-4 border-t border-dashed flex justify-between items-center text-[9px] text-gray-400 font-black">
                             <span>ดูประวัติทั้งหมด</span><span>→</span>
                         </div>
                     </div>`;
             });
         }
 
+        // ===== SEARCH / FILTER =====
         function filterDashboard() {
-            const q = document.getElementById('dbSearch').value.toLowerCase();
-            const filtered = allRecords.filter(r => r[2].toLowerCase().includes(q) || r[3].toLowerCase().includes(q) || r[6].toLowerCase().includes(q));
+            const q = document.getElementById('dbSearch').value.toLowerCase().trim();
+            if (!q) { updateStats(allRecords); renderDashboard(allRecords); return; }
+            const filtered = allRecords.filter(r =>
+                (r[2] || '').toLowerCase().includes(q) ||
+                (r[3] || '').toLowerCase().includes(q) ||
+                (r[6] || '').toLowerCase().includes(q) ||
+                (r[8] || '').toLowerCase().includes(q)
+            );
+            updateStats(filtered);
             renderDashboard(filtered);
         }
 
+        // ===== TIMELINE MODAL =====
         function openTimeline(name) {
             document.getElementById('modal-cust-name').innerText = name;
             const container = document.getElementById('timeline-content');
             container.innerHTML = '';
             const history = allRecords.filter(r => r[2] === name).reverse();
-            history.forEach(r => {
-                container.innerHTML += `
-                    <div class="timeline-card">
-                        <div class="bg-slate-50 p-6 rounded-3xl border border-gray-100">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter">ครั้งที่ ${r[4]}</span>
-                                <span class="text-[10px] font-bold text-gray-400">${r[5]}</span>
+
+            if (history.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-300 font-bold">ยังไม่มีประวัติ</p>';
+            } else {
+                history.forEach(r => {
+                    const statusBadge = r[9] === 'ตามเป้า'
+                        ? '<span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-[9px] font-black">✅ ตามเป้า</span>'
+                        : '<span class="bg-red-100 text-red-500 px-3 py-1 rounded-full text-[9px] font-black">⚠️ มีปัญหา</span>';
+                    container.innerHTML += `
+                        <div class="timeline-card">
+                            <div class="bg-slate-50 p-6 rounded-3xl border border-gray-100">
+                                <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                                    <span class="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full text-[9px] font-black uppercase">ครั้งที่ ${r[4] || '?'}</span>
+                                    <span class="text-[10px] font-bold text-gray-400">${r[5] || ''}</span>
+                                    ${statusBadge}
+                                </div>
+                                <h5 class="font-black text-gray-800 mb-2">${r[6] || '-'}</h5>
+                                <p class="text-sm text-gray-500 leading-relaxed mb-4">${r[8] || '-'}</p>
+                                ${r[10] ? `<a href="${r[10]}" target="_blank" rel="noopener"
+                                    class="inline-flex items-center gap-1 text-indigo-500 text-[10px] font-bold underline hover:text-indigo-700">
+                                    📎 ดูรูปประกอบ</a>` : ''}
                             </div>
-                            <h5 class="font-black text-gray-800 mb-2">${r[6]}</h5>
-                            <p class="text-sm text-gray-500 leading-relaxed mb-4">${r[8]}</p>
-                            ${r[10] ? `<a href="${r[10]}" target="_blank" class="text-indigo-500 text-[10px] font-bold underline">📎 ดูรูปประกอบ</a>` : ''}
-                        </div>
-                    </div>`;
-            });
-            document.getElementById('timeline-modal').style.display = 'flex';
+                        </div>`;
+                });
+            }
+            document.getElementById('timeline-modal').classList.add('open');
         }
 
+        function closeTimeline() {
+            document.getElementById('timeline-modal').classList.remove('open');
+        }
+
+        // ===== IMAGE PREVIEW (ฟีเจอร์แนบรูป) =====
         function previewImg(input) {
             if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast("รูปภาพขนาดใหญ่เกิน 5MB", "error");
+                    input.value = '';
+                    return;
+                }
                 const reader = new FileReader();
-                reader.onload = e => { 
+                reader.onload = e => {
                     const img = document.getElementById('imgPreview');
-                    img.src = e.target.result; img.classList.remove('hidden');
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    document.getElementById('removeImgBtn').classList.remove('hidden');
                 };
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(file);
             }
         }
 
+        function removeImg() {
+            const img = document.getElementById('imgPreview');
+            img.src = '';
+            img.classList.add('hidden');
+            document.getElementById('removeImgBtn').classList.add('hidden');
+            document.getElementById('photoInput').value = '';
+            showToast("ลบรูปแล้ว", "warning");
+        }
+
+        // ===== FORM SUBMIT (บันทึกลง Google Sheet) =====
         document.getElementById('salesForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.disabled = true; btn.innerText = "กำลังบันทึก...";
-            
+            btn.disabled = true;
+            btn.innerText = "⏳ กำลังบันทึก...";
+
+            // รวบรวมรูปภาพ (ถ้ามี)
             let files = [];
             const imgPreview = document.getElementById('imgPreview');
-            if (!imgPreview.classList.contains('hidden')) {
-                files.push({ name: "visit_photo.jpg", data: imgPreview.src });
+            if (!imgPreview.classList.contains('hidden') && imgPreview.src) {
+                files.push({ name: `visit_${Date.now()}.jpg`, data: imgPreview.src });
             }
 
             const payload = {
                 action: 'saveLog',
-                customer: document.getElementById('customerName').value,
-                model: document.getElementById('modelName').value,
-                count: document.getElementById('visitCount').value,
+                customer: document.getElementById('customerName').value.trim(),
+                model: document.getElementById('modelName').value.trim(),
+                count: document.getElementById('visitCount').value || 1,
                 date: document.getElementById('visitDate').value,
-                subject: document.getElementById('subject').value,
-                comment: document.getElementById('comment').value,
+                subject: document.getElementById('subject').value.trim(),
+                comment: document.getElementById('comment').value.trim(),
                 status: document.querySelector('input[name="status"]:checked').value,
                 files: files,
                 email: currentUser.email
             };
 
             try {
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                showToast("บันทึกสำเร็จ! ข้อมูลถูกอัปเดตแล้ว");
+                const res = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                showToast("บันทึกสำเร็จ! 🎉 ข้อมูลเข้า Sheet แล้ว");
                 document.getElementById('salesForm').reset();
-                imgPreview.classList.add('hidden');
+                document.getElementById('visitDate').value = new Date().toISOString().split('T')[0];
+                removeImg();
                 await fetchInitialData();
                 showPage('page-dashboard');
-            } catch (err) { showToast("เกิดข้อผิดพลาดในการเชื่อมต่อ", "error"); }
-            finally { btn.disabled = false; btn.innerText = "บันทึกข้อมูลเข้า Sheet"; }
+            } catch (err) {
+                showToast("เกิดข้อผิดพลาด — ตรวจสอบการเชื่อมต่อ", "error");
+                console.error("Submit error:", err);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "💾 บันทึกข้อมูลเข้า Sheet";
+            }
         });
 
+        // ===== DOWNLOAD PDF =====
         function downloadPDF() {
+            const name = document.getElementById('modal-cust-name').innerText;
             const element = document.getElementById('timeline-content');
-            html2pdf().from(element).save('History.pdf');
+            const opt = {
+                margin: 1,
+                filename: `SalesFlow_${name}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+            };
+            showToast("กำลังสร้าง PDF...", "warning");
+            html2pdf().set(opt).from(element).save();
         }
 
+        // ===== DOWNLOAD MARKDOWN =====
         function downloadMD() {
             const name = document.getElementById('modal-cust-name').innerText;
-            const history = allRecords.filter(r => r[2] === name);
+            const history = allRecords.filter(r => r[2] === name).reverse();
             let mdText = `# ประวัติลูกค้า: ${name}\n\n`;
-            history.forEach(r => { mdText += `### ครั้งที่ ${r[4]} (${r[5]})\n**หัวข้อ:** ${r[6]}\n**บันทึก:** ${r[8]}\n\n---\n`; });
-            const blob = new Blob([mdText], { type: 'text/markdown' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${name}.md`; a.click();
+            mdText += `> ส่งออกจาก SalesFlow Pro วันที่ ${new Date().toLocaleDateString('th-TH')}\n\n---\n\n`;
+            history.forEach(r => {
+                mdText += `### ครั้งที่ ${r[4]} (${r[5]})\n`;
+                mdText += `- **หัวข้อ:** ${r[6]}\n`;
+                mdText += `- **สถานะ:** ${r[9]}\n`;
+                mdText += `- **บันทึก:** ${r[8]}\n`;
+                if (r[10]) mdText += `- **รูปภาพ:** [ดูรูป](${r[10]})\n`;
+                mdText += `\n---\n\n`;
+            });
+            const blob = new Blob([mdText], { type: 'text/markdown;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${name}.md`;
+            a.click();
+            showToast("ดาวน์โหลด Markdown สำเร็จ!");
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); }
+        // ===== NAVIGATION =====
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('translate-x-full');
+        }
+
         function showPage(id) {
             document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            toggleSidebar();
+            // ปิด sidebar หลังจากเลือกหน้า
+            document.getElementById('sidebar').classList.add('translate-x-full');
         }
-        function closeTimeline() { document.getElementById('timeline-modal').style.display = 'none'; }
-        function logout() { localStorage.removeItem('sales_user_30d'); location.reload(); }
+
+        function logout() {
+            if (confirm("ต้องการออกจากระบบหรือไม่?")) {
+                localStorage.removeItem('sales_user_30d');
+                showToast("ออกจากระบบแล้ว");
+                setTimeout(() => location.reload(), 800);
+            }
+        }
+
+        // ===== CLOSE MODAL ON BACKDROP CLICK =====
+        document.getElementById('timeline-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeTimeline();
+        });
     </script>
 </body>
 </html>
