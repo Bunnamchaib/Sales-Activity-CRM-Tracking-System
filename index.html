@@ -11,7 +11,7 @@
 <title>SalesFlow Pro v3</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -31,8 +31,8 @@ body{font-family:"Kanit",sans-serif;background:var(--bg);color:var(--text);overf
 /* ===SAFE AREA NAV=== */
 #topnav{
   position:fixed;top:0;left:0;right:0;
-  padding-top:max(var(--sat),env(safe-area-inset-top,0px));
-  height:calc(var(--nav-h) + max(var(--sat),env(safe-area-inset-top,0px)));
+  padding-top:var(--sat);
+  height:calc(var(--nav-h) + var(--sat));
   z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
   display:flex;align-items:flex-end;justify-content:space-between;
@@ -46,8 +46,8 @@ body{font-family:"Kanit",sans-serif;background:var(--bg);color:var(--text);overf
   display:none;
   padding:12px;
   max-width:760px;margin:0 auto;
-  padding-top:calc(var(--nav-h) + max(var(--sat),env(safe-area-inset-top,0px)) + 14px);
-  padding-bottom:calc(var(--bot-h) + max(var(--sab),env(safe-area-inset-bottom,0px)) + 20px);
+  padding-top:calc(var(--nav-h) + var(--sat) + 14px);
+  padding-bottom:calc(var(--bot-h) + var(--sab) + 20px);
   padding-left:calc(12px + var(--sal));
   padding-right:calc(12px + var(--sar));
 }
@@ -134,7 +134,7 @@ textarea.field{resize:vertical;min-height:80px}
 /* ===MODALS=== */
 .mwrap{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center}
 .mwrap.on{display:flex}
-.msheet{background:var(--card);width:100%;max-width:680px;border-radius:24px 24px 0 0;max-height:92vh;display:flex;flex-direction:column;animation:shUp .3s cubic-bezier(.34,1.56,.64,1);padding-bottom:var(--sab);overflow-x:hidden;}
+.msheet{background:var(--card);width:100%;max-width:680px;border-radius:24px 24px 0 0;max-height:92vh;display:flex;flex-direction:column;animation:shUp .3s cubic-bezier(.34,1.56,.64,1);padding-bottom:var(--sab)}
 @keyframes shUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .mbody{flex:1;overflow-y:auto;padding:8px 20px 28px;overscroll-behavior:contain}
 .mhandle{width:40px;height:4px;border-radius:4px;background:var(--border);margin:10px auto 14px}
@@ -150,7 +150,7 @@ textarea.field{resize:vertical;min-height:80px}
 /* ===AUTOCOMPLETE (mobile friendly)=== */
 .acwrap{position:relative}
 .acbox{position:absolute;top:100%;left:0;right:0;background:var(--card);border:2px solid var(--P);border-radius:0 0 14px 14px;z-index:300;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.15)}
-.acitem{padding:14px 16px;font-size:14px;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--border);-webkit-user-select:none;user-select:none;touch-action:manipulation;min-height:48px;display:flex;align-items:center;}
+.acitem{padding:13px 16px;font-size:14px;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--border);-webkit-user-select:none}
 .acitem:active,.acitem:hover{background:#eef2ff;color:var(--P)}
 .acitem:last-child{border-bottom:none;border-radius:0 0 12px 12px}
 
@@ -216,7 +216,7 @@ textarea.field{resize:vertical;min-height:80px}
     <div style="font-size:52px;margin-bottom:12px">🚀</div>
     <h1 style="color:#fff;font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:4px">SalesFlow Pro</h1>
     <p style="color:rgba(255,255,255,.4);font-size:12px;margin-bottom:28px">v3.1 · Thai · 中文 · 日本語</p>
-    <div id="g_id_onload" data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com" data-callback="handleSignIn" data-auto_prompt="false" data-cancel_on_tap_outside="false"></div>
+    <div id="g_id_onload" data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com" data-callback="handleSignIn"></div>
     <div class="g_id_signin" style="display:flex;justify-content:center" data-type="standard" data-shape="pill" data-theme="filled_white" data-size="large"></div>
   </div>
 </div>
@@ -666,7 +666,7 @@ textarea.field{resize:vertical;min-height:80px}
 // =======================================================
 // ⚠️ ใส่ URL จาก Apps Script > Deploy > Web App URL
 // =======================================================
-const WEB_APP_URL="https://script.google.com/macros/s/AKfycbyWuGW3kbBsEBUhakYgAxd14UmMueZ7rB9iwdsAsUSzn0AG4f2casmaUBMoqTgr83Q9/exec";
+const WEB_APP_URL="https://script.google.com/macros/s/AKfycbxj3oXer5ivtd6-xK-A6Hn9KnKgOEAUQnwLKEUxJJ4fEFIadwWm8cDb6JZyaOrZz-jf/exec";
 
 // STATE
 let R=[],BK=[],LD=[],AN=[],CU=null;
@@ -676,48 +676,24 @@ let charts={},currentLogMode="new";
 let pwaPrompt=null;
 const MTH=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
 
-function todayStr(){return new Date().toISOString().split("T")[0];}
-function tmrStr(){return new Date(Date.now()+864e5).toISOString().split("T")[0];}
-
 // INIT
 window.onload=()=>{
-  // 1) DOM setup — safe, non-blocking
+  // DOM setup (null-safe)
+  const n=new Date();calY=n.getFullYear();calM=n.getMonth();
+  try{const fd=document.getElementById("f-date");if(fd)fd.value=todayStr();}catch(e){}
+  try{const bd=document.getElementById("bk-date");if(bd)bd.value=tmrStr();}catch(e){}
+  try{buildCalSels();}catch(e){}
+  try{initSettings();}catch(e){}
+  try{applyTheme();}catch(e){}
+  window.addEventListener("online",syncDrafts);
+  if(!navigator.onLine)toast("ออฟไลน์อยู่","warning");
+  window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();pwaPrompt=e;const pb=document.getElementById("pwa-banner");if(pb)pb.classList.add("on");});
+  try{genManifest();}catch(e){}
+  // Session check
   try{
-    const n=new Date();calY=n.getFullYear();calM=n.getMonth();
-    const fd=document.getElementById("f-date");if(fd)fd.value=todayStr();
-    const bd=document.getElementById("bk-date");if(bd)bd.value=tmrStr();
-    try{buildCalSels();}catch(e){console.warn("buildCalSels:",e);}
-    try{initSettings();}catch(e){console.warn("initSettings:",e);}
-    try{applyTheme();}catch(e){console.warn("applyTheme:",e);}
-    window.addEventListener("online",()=>{try{syncDrafts();}catch(e){}});
-    if(!navigator.onLine)setTimeout(()=>toast("ออฟไลน์อยู่","warning"),500);
-    window.addEventListener("beforeinstallprompt",e=>{
-      e.preventDefault();pwaPrompt=e;
-      const pb=document.getElementById("pwa-banner");if(pb)pb.classList.add("on");
-    });
-    try{genManifest();}catch(e){console.warn("genManifest:",e);}
-  }catch(e){console.error("Init error:",e);}
-
-  // 2) Session check — after DOM ready
-  try{
-    var stored=localStorage.getItem("sf3_u");
-    if(stored){
-      var u=null;
-      try{u=JSON.parse(stored);}catch(je){localStorage.removeItem("sf3_u");}
-      if(u&&u.email&&u.expiry&&(typeof u.expiry==="number")&&Date.now()<u.expiry){
-        CU=u;
-        initApp();
-        return; // logged in — stop here
-      }else{
-        localStorage.removeItem("sf3_u");
-      }
-    }
-  }catch(e){
-    console.error("Session check error:",e);
-    try{localStorage.removeItem("sf3_u");}catch(x){}
-  }
-  // 3) Not logged in — show login screen (already visible by default CSS)
-  console.log("SalesFlow: waiting for Google Sign-In...");
+    const s=localStorage.getItem("sf3_u");
+    if(s){const u=JSON.parse(s);if(u&&u.email&&u.expiry&&Date.now()<u.expiry){CU=u;initApp();}else localStorage.removeItem("sf3_u");}
+  }catch(e){localStorage.removeItem("sf3_u");}
 };
 
 function genManifest(){
@@ -729,77 +705,41 @@ function genManifest(){
 function installPWA(){if(pwaPrompt){pwaPrompt.prompt();pwaPrompt.userChoice.then(r=>{if(r.outcome==="accepted")toast("เพิ่มลงหน้าจอหลักแล้ว! 📱");document.getElementById("pwa-banner").classList.remove("on");pwaPrompt=null;});}}
 
 function initApp(){
-  try{
-    const lov=document.getElementById("loginov");
-    if(lov)lov.style.display="none";
-    try{applyUserSettings();}catch(e){console.warn("applyUserSettings:",e);}
-    try{if(CU)syncUI(CU);}catch(e){console.warn("syncUI:",e);}
-    try{fetchAll();}catch(e){console.warn("fetchAll:",e);}
-    try{loadPills();}catch(e){console.warn("loadPills:",e);}
-  }catch(e){
-    console.error("initApp error:",e);
-    // Last resort — force hide login overlay even if something crashed
-    try{document.getElementById("loginov").style.display="none";}catch(x){}
-  }
+  try{const lov=document.getElementById("loginov");if(lov)lov.style.display="none";}catch(e){}
+  try{applyUserSettings();}catch(e){}
+  try{if(CU)syncUI(CU);}catch(e){}
+  try{fetchAll();}catch(e){}
+  try{loadPills();}catch(e){}
 }
 
-function decodeJWT(token){
-  try{
-    var b64=token.split(".")[1];
-    // base64url → base64 (replace - with + and _ with /)
-    b64=b64.replace(/-/g,"+").replace(/_/g,"/");
-    // add padding if needed
-    while(b64.length%4!==0)b64+="=";
-    return JSON.parse(atob(b64));
-  }catch(e){console.error("JWT decode error:",e);return null;}
-}
 function handleSignIn(resp){
   try{
-    if(!resp||!resp.credential)throw new Error("No credential");
-    const p=decodeJWT(resp.credential);
-    if(!p||!p.email)throw new Error("Invalid JWT payload");
+    // Google JWT ใช้ base64url — ต้องแปลงก่อน atob
+    let b64=resp.credential.split(".")[1];
+    b64=b64.replace(/-/g,"+").replace(/_/g,"/");
+    while(b64.length%4)b64+="=";
+    const p=JSON.parse(atob(b64));
     CU={email:p.email,name:p.name||p.email,picture:p.picture||"",expiry:Date.now()+30*864e5};
     localStorage.setItem("sf3_u",JSON.stringify(CU));
-    toast("ยินดีต้อนรับ "+(p.name||p.email)+"! 🎉");
-    setTimeout(()=>initApp(),200);
-  }catch(e){
-    console.error("handleSignIn error:",e);
-    toast("เข้าระบบล้มเหลว — ลองใหม่อีกครั้ง","error");
-  }
+    toast("ยินดีต้อนรับ "+CU.name+"! 🎉");
+    setTimeout(()=>initApp(),300);
+  }catch(e){console.error("handleSignIn:",e);toast("เข้าระบบล้มเหลว","error");}
 }
 function getDN(){return localStorage.getItem("sf3_dn")||CU.name;}
 function getRole(){return localStorage.getItem("sf3_role")||"Sales Specialist";}
 function syncUI(u){
-  try{
-    const nu=document.getElementById("nav-user");if(nu)nu.textContent=getDN();
-    const pn=document.getElementById("pf-name");if(pn)pn.textContent=getDN();
-    const pe=document.getElementById("pf-email");if(pe)pe.textContent=u.email||"";
-    const pr=document.getElementById("pf-role");if(pr)pr.textContent=getRole();
-    const av=document.getElementById("pf-av");if(av&&u.picture)av.innerHTML=`<img src="${u.picture}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-  }catch(e){console.warn("syncUI error:",e);}
+  try{const el=document.getElementById("nav-user");if(el)el.textContent=getDN();}catch(e){}
+  try{const el=document.getElementById("pf-name");if(el)el.textContent=getDN();}catch(e){}
+  try{const el=document.getElementById("pf-email");if(el)el.textContent=u.email||"";}catch(e){}
+  try{const el=document.getElementById("pf-role");if(el)el.textContent=getRole();}catch(e){}
+  try{const el=document.getElementById("pf-av");if(el&&u.picture)el.innerHTML=`<img src="${u.picture}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;}catch(e){}
 }
 function logout(){if(!confirm("ออกจากระบบ?"))return;localStorage.removeItem("sf3_u");toast("ออกแล้ว");setTimeout(()=>location.reload(),700);}
 
 // FETCH
 async function fetchAll(){
-  if(!WEB_APP_URL||WEB_APP_URL.includes("YOUR_DEPLOYMENT_ID")){
-    R=[];BK=[];LD=[];AN=[];renderAll();
-    toast("⚠️ ยังไม่ได้ตั้งค่า WEB_APP_URL ใน index.html","warning");
-    return;
-  }
-  setLoading(true);
-  try{
-    const res=await fetch(`${WEB_APP_URL}?action=getAll&email=${encodeURIComponent(CU.email)}&t=${Date.now()}`);
-    if(!res.ok)throw new Error("HTTP "+res.status);
-    const d=await res.json();
-    R=d.records||[];BK=d.bookings||[];LD=d.lost||[];AN=d.announcements||[];
-    renderAll();
-  }catch(e){
-    console.error("fetchAll error:",e);
-    R=[];BK=[];LD=[];AN=[];
-    renderAll();
-    toast("โหลดข้อมูลล้มเหลว — ตรวจสอบการเชื่อมต่อ","error");
-  }finally{setLoading(false);}
+  try{const res=await fetch(`${WEB_APP_URL}?action=getAll&email=${encodeURIComponent(CU.email)}`);const d=await res.json();R=d.records||[];BK=d.bookings||[];LD=d.lost||[];AN=d.announcements||[];renderAll();}
+  catch(e){toast("โหลดข้อมูลล้มเหลว — ตรวจสอบ WEB_APP_URL","error");}
 }
 function renderAll(){renderAnn();renderHomeStats();renderDash();renderLost();updatePFStats();checkDrafts();}
 
@@ -1290,18 +1230,11 @@ function acInp(inputId,acId){const v=document.getElementById(inputId).value;show
 function acMod(inputId,acId){const v=document.getElementById(inputId).value;showAC(acId,v,getMods(),n=>{document.getElementById(inputId).value=n;closeAC(acId);});}
 function closeAC(id){const b=document.getElementById(id);if(b)b.style.display="none";}
 function showAC(acId,v,list,cb){
-  const box=document.getElementById(acId);if(!box)return;
-  if(!v||!v.trim()){box.style.display="none";return;}
+  const box=document.getElementById(acId);if(!box)return;if(!v||!v.trim()){box.style.display="none";return;}
   const matches=list.filter(x=>x.toLowerCase().includes(v.toLowerCase())).slice(0,6);
   if(!matches.length){box.style.display="none";return;}
   box.style.display="block";
-  box.innerHTML=matches.map((m,i)=>`<div class="acitem" data-idx="${i}" style="cursor:pointer;-webkit-tap-highlight-color:rgba(79,70,229,.2)">🏢 ${escH(m)}</div>`).join("");
-  box.querySelectorAll(".acitem").forEach((el,i)=>{
-    const val=matches[i];
-    const handler=(e)=>{e.preventDefault();e.stopPropagation();cb(val);};
-    el.addEventListener("click",handler);
-    el.addEventListener("touchend",handler,{passive:false});
-  });
+  box.innerHTML=matches.map(m=>`<div class="acitem" ontouchstart="void(0)" onclick="(${cb.toString()})('${m.replace(/\/g,"\\").replace(/'/g,"\'")}')">🏢 ${escH(m)}</div>`).join("");
 }
 // Close AC on outside tap (mobile)
 document.addEventListener("touchstart",e=>{if(!e.target.closest(".acwrap"))document.querySelectorAll(".acbox").forEach(b=>b.style.display="none");},{passive:true});
@@ -1316,6 +1249,8 @@ async function syncDrafts(){const drafts=JSON.parse(localStorage.getItem("sf3_dr
 async function sendPost(payload,onSuccess){try{await fetch(WEB_APP_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});onSuccess&&onSuccess();}catch(e){toast("ส่งข้อมูลล้มเหลว","error");}}
 
 // DATE
+function todayStr(){return new Date().toISOString().split("T")[0];}
+function tmrStr(){return new Date(Date.now()+864e5).toISOString().split("T")[0];}
 function pad(n){return String(n).padStart(2,"0");}
 function fmtDate(s){if(!s)return"";try{const d=new Date(s);return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;}catch(e){return s;}}
 function fmtDT(s){if(!s)return"";try{const d=new Date(s);return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;}catch(e){return s;}}
