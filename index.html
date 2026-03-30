@@ -11,7 +11,7 @@
 <title>SalesFlow Pro v3</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://accounts.google.com/gsi/client" async></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -215,8 +215,8 @@ textarea.field{resize:vertical;min-height:80px}
   <div class="lbox">
     <div style="font-size:52px;margin-bottom:12px">🚀</div>
     <h1 style="color:#fff;font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:4px">SalesFlow Pro</h1>
-    <p style="color:rgba(255,255,255,.4);font-size:12px;margin-bottom:28px">v3.11 · Thai · 中文 · 日本語</p>
-    <div id="g_id_onload" data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com" data-callback="handleSignIn"></div>
+    <p style="color:rgba(255,255,255,.4);font-size:12px;margin-bottom:28px">v3.1 · Thai · 中文 · 日本語</p>
+    <div id="g_id_onload" data-client_id="15068641604-u0mle3asm2div94ld1l891s2an8i5tpf.apps.googleusercontent.com" data-callback="handleSignIn" data-auto_prompt="false" data-cancel_on_tap_outside="false"></div>
     <div class="g_id_signin" style="display:flex;justify-content:center" data-type="standard" data-shape="pill" data-theme="filled_white" data-size="large"></div>
   </div>
 </div>
@@ -666,7 +666,7 @@ textarea.field{resize:vertical;min-height:80px}
 // =======================================================
 // ⚠️ ใส่ URL จาก Apps Script > Deploy > Web App URL
 // =======================================================
-const WEB_APP_URL="https://script.google.com/macros/s/AKfycbxprAHkYeBgpw6f6pMuY-iYB7YEuhHXvr15y9p33uq02NaHOV7joFWvcd382iK2LpNi/exec";
+const WEB_APP_URL="https://script.google.com/macros/s/AKfycbyWuGW3kbBsEBUhakYgAxd14UmMueZ7rB9iwdsAsUSzn0AG4f2casmaUBMoqTgr83Q9/exec";
 
 // STATE
 let R=[],BK=[],LD=[],AN=[],CU=null;
@@ -676,8 +676,12 @@ let charts={},currentLogMode="new";
 let pwaPrompt=null;
 const MTH=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
 
+function todayStr(){return new Date().toISOString().split("T")[0];}
+function tmrStr(){return new Date(Date.now()+864e5).toISOString().split("T")[0];}
+
 // INIT
 window.onload=()=>{
+  // 1) DOM setup — safe, non-blocking
   try{
     const n=new Date();calY=n.getFullYear();calM=n.getMonth();
     const fd=document.getElementById("f-date");if(fd)fd.value=todayStr();
@@ -693,24 +697,27 @@ window.onload=()=>{
     });
     try{genManifest();}catch(e){console.warn("genManifest:",e);}
   }catch(e){console.error("Init error:",e);}
-  // Session check — run last so DOM is fully ready
-  setTimeout(()=>{
-    try{
-      const s=localStorage.getItem("sf3_u");
-      if(s){
-        const u=JSON.parse(s);
-        if(u&&u.email&&u.expiry&&Date.now()<u.expiry){
-          CU=u;
-          initApp();
-        }else{
-          localStorage.removeItem("sf3_u");
-        }
+
+  // 2) Session check — after DOM ready
+  try{
+    var stored=localStorage.getItem("sf3_u");
+    if(stored){
+      var u=null;
+      try{u=JSON.parse(stored);}catch(je){localStorage.removeItem("sf3_u");}
+      if(u&&u.email&&u.expiry&&(typeof u.expiry==="number")&&Date.now()<u.expiry){
+        CU=u;
+        initApp();
+        return; // logged in — stop here
+      }else{
+        localStorage.removeItem("sf3_u");
       }
-    }catch(e){
-      console.error("Session check error:",e);
-      try{localStorage.removeItem("sf3_u");}catch(x){}
     }
-  },100);
+  }catch(e){
+    console.error("Session check error:",e);
+    try{localStorage.removeItem("sf3_u");}catch(x){}
+  }
+  // 3) Not logged in — show login screen (already visible by default CSS)
+  console.log("SalesFlow: waiting for Google Sign-In...");
 };
 
 function genManifest(){
@@ -736,15 +743,25 @@ function initApp(){
   }
 }
 
+function decodeJWT(token){
+  try{
+    var b64=token.split(".")[1];
+    // base64url → base64 (replace - with + and _ with /)
+    b64=b64.replace(/-/g,"+").replace(/_/g,"/");
+    // add padding if needed
+    while(b64.length%4!==0)b64+="=";
+    return JSON.parse(atob(b64));
+  }catch(e){console.error("JWT decode error:",e);return null;}
+}
 function handleSignIn(resp){
   try{
-    const p=JSON.parse(atob(resp.credential.split(".")[1]));
-    if(!p||!p.email)throw new Error("Invalid token payload");
+    if(!resp||!resp.credential)throw new Error("No credential");
+    const p=decodeJWT(resp.credential);
+    if(!p||!p.email)throw new Error("Invalid JWT payload");
     CU={email:p.email,name:p.name||p.email,picture:p.picture||"",expiry:Date.now()+30*864e5};
     localStorage.setItem("sf3_u",JSON.stringify(CU));
     toast("ยินดีต้อนรับ "+(p.name||p.email)+"! 🎉");
-    // initApp directly — no reload needed, avoids GSI async race condition
-    setTimeout(()=>initApp(),300);
+    setTimeout(()=>initApp(),200);
   }catch(e){
     console.error("handleSignIn error:",e);
     toast("เข้าระบบล้มเหลว — ลองใหม่อีกครั้ง","error");
@@ -1299,8 +1316,6 @@ async function syncDrafts(){const drafts=JSON.parse(localStorage.getItem("sf3_dr
 async function sendPost(payload,onSuccess){try{await fetch(WEB_APP_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});onSuccess&&onSuccess();}catch(e){toast("ส่งข้อมูลล้มเหลว","error");}}
 
 // DATE
-function todayStr(){return new Date().toISOString().split("T")[0];}
-function tmrStr(){return new Date(Date.now()+864e5).toISOString().split("T")[0];}
 function pad(n){return String(n).padStart(2,"0");}
 function fmtDate(s){if(!s)return"";try{const d=new Date(s);return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;}catch(e){return s;}}
 function fmtDT(s){if(!s)return"";try{const d=new Date(s);return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;}catch(e){return s;}}
