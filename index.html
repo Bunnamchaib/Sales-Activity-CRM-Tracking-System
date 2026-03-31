@@ -680,15 +680,17 @@ const MTH=["มกราคม","กุมภาพันธ์","มีนา�
 window.onload=()=>{
   try{const s=localStorage.getItem("sf3_u");if(s){const u=JSON.parse(s);if(Date.now()<u.expiry){CU=u;initApp();}else localStorage.removeItem("sf3_u");}}catch(e){localStorage.removeItem("sf3_u");}
   const n=new Date();calY=n.getFullYear();calM=n.getMonth();
-  document.getElementById("f-date")?.value=todayStr();
-  document.getElementById("bk-date")?.value=tmrStr();
-  buildCalSels();initSettings();applyTheme();
+  {const _e=document.getElementById("f-date");if(_e)_e.value=todayStr();}
+  {const _e2=document.getElementById("bk-date");if(_e2)_e2.value=tmrStr();}
+  try{buildCalSels();}catch(e){console.warn("buildCalSels:",e);}
+  try{initSettings();}catch(e){console.warn("initSettings:",e);}
+  applyTheme();
   window.addEventListener("online",syncDrafts);
   if(!navigator.onLine)toast("ออฟไลน์อยู่","warning");
   // PWA install prompt
   window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();pwaPrompt=e;document.getElementById("pwa-banner").classList.add("on");});
   // Generate PWA manifest dynamically
-  genManifest();
+  try{genManifest();}catch(e){console.warn("manifest:",e);}
 };
 
 function genManifest(){
@@ -1032,7 +1034,7 @@ function openLogModal(mode){
   document.getElementById("log-title").textContent=titles[mode]||"📋 บันทึก";
   document.getElementById("f-cust").value="";document.getElementById("f-vn").textContent="?";
   document.getElementById("f-mod").value="";document.getElementById("f-subj").value="";
-  document.getElementById("f-detail").value="";document.getElementById("f-date")?.value=todayStr();
+  document.getElementById("f-detail").value="";{const _e=document.getElementById("f-date");if(_e)_e.value=todayStr();}
   document.getElementById("img-thumbs").innerHTML="";document.getElementById("img-ph").style.display="block";
   document.getElementById("doc-list").innerHTML="";
   document.getElementById("att-our-tags").innerHTML="";document.getElementById("att-cust-tags").innerHTML="";
