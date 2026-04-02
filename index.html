@@ -6,9 +6,9 @@
 <meta name="theme-color" content="#2563eb"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="SalesFlow Pro"/>
+<meta name="apple-mobile-web-app-title" content="Activity Tracking System"/>
 <link rel="manifest" href="manifest.json"/>
-<title>ATS SalesFlow Pro</title>
+<title>Activity Tracking System</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 /* ─── CSS Variables & Reset ─── */
@@ -503,7 +503,7 @@ textarea.form-control{min-height:100px;resize:vertical;line-height:1.5;word-brea
 <div class="login-card">
   <div class="login-logo">
     <div class="icon">📊</div>
-    <h1>SalesFlow Pro</h1>
+    <h1>Activity Tracking System</h1>
     <p>Activity Tracking System</p>
   </div>
   <div id="login-alert" style="display:none;" class="alert alert-error"></div>
@@ -529,7 +529,7 @@ textarea.form-control{min-height:100px;resize:vertical;line-height:1.5;word-brea
 
   <!-- Top bar -->
   <div id="topbar">
-    <span class="logo">📊 SalesFlow Pro</span>
+    <span class="logo">📊 Activity Tracking System</span>
     <button class="avatar-btn" onclick="goPage('profile')">
       <img id="top-avatar" src="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22><circle cx=%2218%22 cy=%2218%22 r=%2218%22 fill=%22%23ffffff33%22/><text x=%2218%22 y=%2224%22 text-anchor=%22middle%22 font-size=%2218%22 fill=%22white%22>👤</text></svg>'" alt="avatar"/>
     </button>
@@ -1063,7 +1063,7 @@ textarea.form-control{min-height:100px;resize:vertical;line-height:1.5;word-brea
 // ═══════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNSI34E9XYTZY-y_vcglkQnzb_LPBsZRejzNg8A2mp6tPJtOoJbIyxyWch_sLe5Tjd/exec"; // <<< ใส่ URL ของ Google Apps Script Web App ที่นี่
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwBZU0iPVDIQA5TQiPQCZuW0YLE4hdlvrQKJECV6BPTDOqNHst-8J0PAfN8cTmuJ9oT/exec"; // <<< ใส่ URL ของ Google Apps Script Web App ที่นี่
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -1219,7 +1219,7 @@ function generateMockLostDeals() {
 
 function generateMockAnnouncements() {
   return [
-    {id:'a1',type:'normal',message:'🎉 ยินดีต้อนรับสู่ ATS SalesFlow Pro! ระบบใหม่พร้อมใช้งานแล้ว',postedBy:'admin',createdAt:'01/07/2025',active:true},
+    {id:'a1',type:'normal',message:'🎉 ยินดีต้อนรับสู่ Activity Tracking System! ระบบใหม่พร้อมใช้งานแล้ว',postedBy:'admin',createdAt:'01/07/2025',active:true},
     {id:'a2',type:'normal',message:'📊 Q2 เป้าหมายยอดขาย 150 ล้านบาท ร่วมกันพิชิตเป้า!',postedBy:'somchai',createdAt:'02/07/2025',active:true},
     {id:'a3',type:'urgent',message:'⚡ ด่วน! ประชุมทีม Sales ทุกคน วันศุกร์นี้ 14:00 น. ห้องประชุม A',postedBy:'admin',createdAt:'03/07/2025',active:true},
   ];
@@ -2598,8 +2598,8 @@ checkSavedLogin();
 <!-- PWA Manifest (inline for GitHub Pages) -->
 <script>
 const manifest = {
-  name:"ATS SalesFlow Pro",
-  short_name:"SalesFlow",
+  name:"Activity Tracking System",
+  short_name:"ATS",
   start_url:"./",
   display:"standalone",
   theme_color:"#2563eb",
