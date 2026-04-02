@@ -198,19 +198,9 @@ textarea.field{resize:vertical;min-height:80px}
   <div class="lbox">
     <div style="text-align:center;font-size:48px;margin-bottom:12px">🚀</div>
     <h1>SalesFlow Pro</h1>
-    <p>v4.0 · เข้าสู่ระบบด้วยบัญชีของคุณ</p>
+    <p>v4.0 · กรอก Username และ Password</p>
 
-    <!-- Tab: Login / Register -->
-    <div style="display:flex;background:rgba(255,255,255,.1);border-radius:14px;padding:4px;margin-bottom:20px;gap:4px">
-      <button id="tab-login" onclick="switchLoginTab('login')"
-        style="flex:1;padding:9px;border-radius:11px;border:none;cursor:pointer;font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;background:rgba(255,255,255,.9);color:#1e293b;transition:all .2s">
-        เข้าสู่ระบบ
-      </button>
-      <button id="tab-reg" onclick="switchLoginTab('register')"
-        style="flex:1;padding:9px;border-radius:11px;border:none;cursor:pointer;font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;background:transparent;color:rgba(255,255,255,.6);transition:all .2s">
-        สมัครสมาชิก
-      </button>
-    </div>
+    <!-- Login only -->
 
     <!-- LOGIN FORM -->
     <div id="login-form">
@@ -231,35 +221,6 @@ textarea.field{resize:vertical;min-height:80px}
         🔐 เข้าสู่ระบบ
       </button>
       <p id="l-err" style="color:#fca5a5;font-size:12px;text-align:center;margin-top:10px;display:none"></p>
-    </div>
-
-    <!-- REGISTER FORM -->
-    <div id="reg-form" style="display:none">
-      <div class="lfield-wrap">
-        <span class="lfield-icon">👤</span>
-        <input id="r-user" class="lfield" type="text" placeholder="ชื่อผู้ใช้ (ภาษาอะไรก็ได้)" autocomplete="off" inputmode="text">
-      </div>
-      <div class="lfield-wrap">
-        <span class="lfield-icon">📝</span>
-        <input id="r-name" class="lfield" type="text" placeholder="ชื่อ-นามสกุล" autocomplete="off" inputmode="text">
-      </div>
-      <div class="lfield-wrap">
-        <span class="lfield-icon">💼</span>
-        <input id="r-role" class="lfield" type="text" placeholder="ตำแหน่ง (เช่น Sales, Manager)" autocomplete="off" inputmode="text">
-      </div>
-      <div class="lfield-wrap" style="position:relative">
-        <span class="lfield-icon">🔑</span>
-        <input id="r-pass" class="lfield" type="password" placeholder="ตั้งรหัสผ่าน (6+ ตัวอักษร)" style="padding-right:48px">
-        <button onclick="togglePw('r-pass')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:rgba(255,255,255,.5)">👁</button>
-      </div>
-      <div class="lfield-wrap" style="position:relative">
-        <span class="lfield-icon">✅</span>
-        <input id="r-pass2" class="lfield" type="password" placeholder="ยืนยันรหัสผ่าน">
-      </div>
-      <button onclick="doRegister()" id="r-btn" class="btn btn-p" style="width:100%;padding:14px;font-size:15px;border-radius:16px;box-shadow:0 4px 20px rgba(79,70,229,.4)">
-        ✨ สมัครสมาชิก
-      </button>
-      <p id="r-err" style="color:#fca5a5;font-size:12px;text-align:center;margin-top:10px;display:none"></p>
     </div>
   </div>
 </div>
@@ -492,6 +453,16 @@ textarea.field{resize:vertical;min-height:80px}
     <div style="background:var(--bg);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--muted);font-weight:600">📅 รูปแบบวันที่: <strong style="color:var(--text)">02/02/2025 18:20</strong></div>
     <button onclick="saveSettings()" class="btn btn-p" style="width:100%;padding:14px;font-size:15px">💾 บันทึกการตั้งค่า</button>
     <button onclick="resetSettings()" class="btn btn-gh" style="width:100%">🔄 Reset Default</button>
+    <div style="background:#fef9c3;border:1px solid #fde68a;border-radius:14px;padding:14px;margin-top:4px">
+      <div style="font-size:13px;font-weight:800;color:#92400e;margin-bottom:8px">👥 การจัดการผู้ใช้</div>
+      <div style="font-size:12px;color:#78350f;line-height:1.7">
+        เพิ่ม/แก้ไขผู้ใช้ใน <strong>Google Sheets → แผ่น Users</strong><br>
+        • คอลัมน์ A: Username<br>
+        • คอลัมน์ B: Password (Hash อัตโนมัติเมื่อ Run initialSetup)<br>
+        • หรือ Run <strong>addUser()</strong> ใน Apps Script<br>
+        • Password เก็บเป็น MD5 Hash เสมอ ไม่ใช่ Plain Text
+      </div>
+    </div>
   </div>
 </section>
 
@@ -712,7 +683,7 @@ textarea.field{resize:vertical;min-height:80px}
 // ============================================================
 // ⚠️ ใส่ URL จาก Apps Script > Deploy > Web App URL
 // ============================================================
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxuBEnnBt5STY8pVsL0SiMHjjS7RHlauSwkI_mj5gSy1GVdpQe-k1jo6EaAFf7iitw/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzeAxOqzNk2-55DTRIjOXJA2vfaM9AzmuYHnJgf0DajFrZHtaNLYx6mD4UlVFuUfMyu/exec";
 
 // STATE
 let R=[],BK=[],LD=[],AN=[],CU=null;
@@ -771,19 +742,7 @@ function installPWA() {
 // ============================================================
 // LOGIN SYSTEM (Username/Password via Apps Script)
 // ============================================================
-function switchLoginTab(tab) {
-  const isLogin = tab === "login";
-  document.getElementById("login-form").style.display = isLogin ? "block" : "none";
-  document.getElementById("reg-form").style.display = isLogin ? "none" : "block";
-  const tl = document.getElementById("tab-login"), tr = document.getElementById("tab-reg");
-  if(isLogin) {
-    tl.style.background = "rgba(255,255,255,.9)"; tl.style.color = "#1e293b";
-    tr.style.background = "transparent"; tr.style.color = "rgba(255,255,255,.6)";
-  } else {
-    tr.style.background = "rgba(255,255,255,.9)"; tr.style.color = "#1e293b";
-    tl.style.background = "transparent"; tl.style.color = "rgba(255,255,255,.6)";
-  }
-}
+function switchLoginTab(tab) {} // removed
 
 function togglePw(id) {
   const el = document.getElementById(id);
@@ -794,8 +753,7 @@ async function doLogin() {
   const username = document.getElementById("l-user").value.trim();
   const password = document.getElementById("l-pass").value;
   const remember = document.getElementById("l-remember").checked;
-  const errEl = document.getElementById("l-err");
-  errEl.style.display = "none";
+  document.getElementById("l-err").style.display = "none";
 
   if(!username || !password) { showLErr("กรุณากรอกชื่อผู้ใช้และรหัสผ่าน"); return; }
 
@@ -803,8 +761,14 @@ async function doLogin() {
   btn.disabled = true; btn.textContent = "⏳ กำลังเข้าสู่ระบบ...";
 
   try {
-    const res = await fetch(`${WEB_APP_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+    const url = WEB_APP_URL + "?action=login" +
+      "&username=" + encodeURIComponent(username) +
+      "&password=" + encodeURIComponent(password);
+
+    const res = await fetch(url, {cache:"no-cache"});
+    if(!res.ok) throw new Error("HTTP " + res.status);
     const d = await res.json();
+
     if(d.success) {
       const expiry = Date.now() + (remember ? 30 : 1) * 864e5;
       CU = { ...d.user, expiry, username };
@@ -818,51 +782,17 @@ async function doLogin() {
       showLErr(d.error || "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
     }
   } catch(e) {
-    showLErr("ไม่สามารถเชื่อมต่อได้ — ตรวจสอบ WEB_APP_URL");
-    console.error(e);
+    console.error("Login error:", e);
+    showLErr("เชื่อมต่อไม่ได้ — ตรวจสอบ WEB_APP_URL ใน Apps Script");
   } finally {
     btn.disabled = false; btn.textContent = "🔐 เข้าสู่ระบบ";
   }
 }
 
-async function doRegister() {
-  const username = document.getElementById("r-user").value.trim();
-  const displayName = document.getElementById("r-name").value.trim();
-  const role = document.getElementById("r-role").value.trim();
-  const pass = document.getElementById("r-pass").value;
-  const pass2 = document.getElementById("r-pass2").value;
-
-  if(!username || !displayName || !pass) { showRErr("กรุณากรอกข้อมูลให้ครบ"); return; }
-  if(pass.length < 6) { showRErr("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร"); return; }
-  if(pass !== pass2) { showRErr("รหัสผ่านไม่ตรงกัน"); return; }
-
-  const btn = document.getElementById("r-btn");
-  btn.disabled = true; btn.textContent = "⏳ กำลังสมัคร...";
-
-  try {
-    const res = await fetch(`${WEB_APP_URL}?action=register`, {
-      method: "POST", mode: "cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action:"register", username, displayName, role: role || "Sales", password: pass })
-    });
-    const d = await res.json();
-    if(d.success) {
-      toast("สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ");
-      switchLoginTab("login");
-      document.getElementById("l-user").value = username;
-      document.getElementById("l-pass").focus();
-    } else {
-      showRErr(d.error || "สมัครสมาชิกไม่สำเร็จ");
-    }
-  } catch(e) {
-    showRErr("ไม่สามารถเชื่อมต่อได้"); console.error(e);
-  } finally {
-    btn.disabled = false; btn.textContent = "✨ สมัครสมาชิก";
-  }
-}
+// register removed
 
 function showLErr(msg) { const e = document.getElementById("l-err"); e.textContent = msg; e.style.display = "block"; }
-function showRErr(msg) { const e = document.getElementById("r-err"); e.textContent = msg; e.style.display = "block"; }
+
 
 function getDN() { return CU ? (CU.displayName || CU.username || "User") : "User"; }
 function getRole() { return CU ? (CU.role || "Sales") : "Sales"; }
@@ -930,19 +860,16 @@ async function changePassword() {
   if(!oldPw || !newPw) { toast("กรุณากรอกรหัสผ่าน", "error"); return; }
   if(newPw.length < 6) { toast("รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัว", "error"); return; }
   if(newPw !== newPw2) { toast("รหัสผ่านใหม่ไม่ตรงกัน", "error"); return; }
+  // Verify old password locally first using GET
   try {
-    const res = await fetch(WEB_APP_URL, {
-      method: "POST", mode: "cors",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ action:"changePassword", username: CU.username, oldPassword: oldPw, newPassword: newPw })
-    });
-    const d = await res.json();
-    if(d.success) {
-      toast("เปลี่ยนรหัสผ่านสำเร็จ! 🔐");
-      document.getElementById("pw-old").value = "";
-      document.getElementById("pw-new").value = "";
-      document.getElementById("pw-new2").value = "";
-    } else { toast(d.error || "เปลี่ยนรหัสผ่านล้มเหลว", "error"); }
+    const vres = await fetch(`${WEB_APP_URL}?action=verifyPw&username=${encodeURIComponent(CU.username)}&password=${encodeURIComponent(oldPw)}`);
+    const vd = await vres.json();
+    if(!vd.success) { toast(vd.error || "รหัสผ่านปัจจุบันไม่ถูกต้อง", "error"); return; }
+    await fetch(WEB_APP_URL, {method:"POST",mode:"no-cors",body:JSON.stringify({action:"changePassword",username:CU.username,oldPassword:oldPw,newPassword:newPw})});
+    toast("เปลี่ยนรหัสผ่านสำเร็จ! 🔐");
+    document.getElementById("pw-old").value="";
+    document.getElementById("pw-new").value="";
+    document.getElementById("pw-new2").value="";
   } catch(e) { toast("เชื่อมต่อล้มเหลว", "error"); }
 }
 
@@ -961,18 +888,15 @@ async function uploadProfilePhoto(input) {
       cv.getContext("2d").drawImage(img,0,0,w,h);
       const data = cv.toDataURL("image/jpeg",.85);
       try {
-        const res = await fetch(WEB_APP_URL, {
-          method:"POST", mode:"cors",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({action:"uploadAvatar", username:CU.username, imageData:data, fileName:"avatar_"+CU.username+".jpg"})
-        });
-        const d = await res.json();
-        if(d.success && d.url) {
-          CU.avatarUrl = d.url;
-          localStorage.setItem("sf4_session", JSON.stringify(CU));
-          syncUI(); toast("อัปโหลดรูปโปรไฟล์สำเร็จ! 📷");
-        } else { toast(d.error || "อัปโหลดล้มเหลว", "error"); }
-      } catch(err) { toast("เชื่อมต่อล้มเหลว", "error"); }
+        // Show preview immediately, upload in background
+        const previewUrl = data;
+        CU.avatarUrl = previewUrl;
+        localStorage.setItem("sf4_session", JSON.stringify(CU));
+        syncUI();
+        toast("บันทึกรูปโปรไฟล์แล้ว! 📷");
+        // Upload to Drive in background
+        fetch(WEB_APP_URL, {method:"POST",mode:"no-cors",body:JSON.stringify({action:"uploadAvatar",username:CU.username,imageData:data,fileName:"avatar_"+CU.username+".jpg"})}).catch(()=>{});
+      } catch(err) { toast("เกิดข้อผิดพลาด", "error"); }
       setLoading(false);
     };
     img.src = e.target.result;
@@ -1186,7 +1110,7 @@ function renderAttTags(side){const arr=side==="our"?attOur:attCust;document.getE
 function acAtt(inputId,acId){const v=document.getElementById(inputId).value;const names=[...new Set(R.flatMap(r=>{try{return JSON.parse(r[11]).map(a=>a.name);}catch(e){return [];}}))];showAC(acId,v,names,n=>{document.getElementById(inputId).value=n;document.getElementById(acId).style.display="none";});}
 
 // SUBMIT LOG
-async function submitLog(){const cust=document.getElementById("f-cust").value.trim(),subj=document.getElementById("f-subj").value.trim();if(!cust||!subj){toast("กรุณากรอกชื่อลูกค้าและหัวข้อ","error");return;}const isLink=document.getElementById("use-link").checked;const linkVal=isLink?document.getElementById("doc-li").value.trim():"";const payload={action:"saveLog",customer:cust,model:document.getElementById("f-mod").value.trim(),count:calcVisit(cust),date:document.getElementById("f-date").value,subject:subj,detail:document.getElementById("f-detail").value.trim(),status:document.querySelector('input[name="f-st"]:checked').value,images:myImgs,docs:linkVal?[{name:"ลิงก์เอกสาร",url:linkVal}]:myDocs,attendees:[...attOur.map(a=>({...a,side:"our"})),...attCust.map(a=>({...a,side:"cust"}))],nextAction:document.getElementById("use-next").checked?document.getElementById("na-text").value.trim():"",username:CU.username,userName:getDN()};if(!navigator.onLine){saveDraft(payload);toast("บันทึกร่างแล้ว (ออฟไลน์)","warning");closeModal("modal-log");return;}const btn=document.getElementById("f-sub-btn");btn.disabled=true;btn.textContent="⏳ กำลังบันทึก...";if(myImgs.length||myDocs.length)setLoading(true);try{const res=await fetch(WEB_APP_URL,{method:"POST",mode:"cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});await res.text();toast("บันทึกสำเร็จ! 🎉");closeModal("modal-log");await fetchAll();const st=payload.status;if(st==="ติดตามผล"||st==="รอลูกค้า")showFU(cust,st);else go("dash");}catch(e){saveDraft(payload);toast("เน็ตขัดข้อง — บันทึกร่างแล้ว","warning");}finally{btn.disabled=false;btn.textContent="💾 บันทึกข้อมูล";setLoading(false);}}
+async function submitLog(){const cust=document.getElementById("f-cust").value.trim(),subj=document.getElementById("f-subj").value.trim();if(!cust||!subj){toast("กรุณากรอกชื่อลูกค้าและหัวข้อ","error");return;}const isLink=document.getElementById("use-link").checked;const linkVal=isLink?document.getElementById("doc-li").value.trim():"";const payload={action:"saveLog",customer:cust,model:document.getElementById("f-mod").value.trim(),count:calcVisit(cust),date:document.getElementById("f-date").value,subject:subj,detail:document.getElementById("f-detail").value.trim(),status:document.querySelector('input[name="f-st"]:checked').value,images:myImgs,docs:linkVal?[{name:"ลิงก์เอกสาร",url:linkVal}]:myDocs,attendees:[...attOur.map(a=>({...a,side:"our"})),...attCust.map(a=>({...a,side:"cust"}))],nextAction:document.getElementById("use-next").checked?document.getElementById("na-text").value.trim():"",username:CU.username,userName:getDN()};if(!navigator.onLine){saveDraft(payload);toast("บันทึกร่างแล้ว (ออฟไลน์)","warning");closeModal("modal-log");return;}const btn=document.getElementById("f-sub-btn");btn.disabled=true;btn.textContent="⏳ กำลังบันทึก...";if(myImgs.length||myDocs.length)setLoading(true);try{await fetch(WEB_APP_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});toast("บันทึกสำเร็จ! 🎉");closeModal("modal-log");await fetchAll();const st=payload.status;if(st==="ติดตามผล"||st==="รอลูกค้า")showFU(cust,st);else go("dash");}catch(e){saveDraft(payload);toast("เน็ตขัดข้อง — บันทึกร่างแล้ว","warning");}finally{btn.disabled=false;btn.textContent="💾 บันทึกข้อมูล";setLoading(false);}}
 function showFU(cust,status){const d3=new Date(Date.now()+3*864e5).toLocaleDateString("th-TH");document.getElementById("fu-msg").textContent=`"${status}" — นัดติดตาม ${cust} ใน 3 วัน (${d3})?`;document.getElementById("fu-ok").onclick=()=>{closeModal("modal-fu");document.getElementById("bk-c").value=cust;document.getElementById("bk-date").value=new Date(Date.now()+3*864e5).toISOString().split("T")[0];document.getElementById("bk-note").value="Follow-up จากครั้งก่อน";bkAttOur=[];bkAttCust=[];renderBkAttTags("our");renderBkAttTags("cust");openModal("modal-bk");};openModal("modal-fu");}
 
 // ACTIVITY LOG
@@ -1220,10 +1144,10 @@ document.addEventListener("click",e=>{if(!e.target.closest(".acwrap"))document.q
 // OFFLINE
 function saveDraft(p){const drafts=JSON.parse(localStorage.getItem("sf4_drafts")||"[]");drafts.push({...p,_at:Date.now()});localStorage.setItem("sf4_drafts",JSON.stringify(drafts));checkDrafts();}
 function checkDrafts(){const drafts=JSON.parse(localStorage.getItem("sf4_drafts")||"[]");const w=document.getElementById("draft-warn");if(!w)return;if(drafts.length){w.style.display="block";document.getElementById("draft-cnt").textContent=drafts.length;}else w.style.display="none";}
-async function syncDrafts(){const drafts=JSON.parse(localStorage.getItem("sf4_drafts")||"[]");if(!drafts.length)return;if(!navigator.onLine){toast("ยังไม่มีเน็ต","warning");return;}toast(`ส่งร่าง ${drafts.length} รายการ...`,"warning");let ok=0;for(const d of drafts){try{await fetch(WEB_APP_URL,{method:"POST",mode:"cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});ok++;}catch(e){}}if(ok===drafts.length){localStorage.removeItem("sf4_drafts");toast(`ส่งสำเร็จ ${ok} รายการ!`);checkDrafts();fetchAll();}else{localStorage.setItem("sf4_drafts",JSON.stringify(drafts.slice(ok)));toast(`ส่ง ${ok}/${drafts.length}`,"warning");checkDrafts();}}
+async function syncDrafts(){const drafts=JSON.parse(localStorage.getItem("sf4_drafts")||"[]");if(!drafts.length)return;if(!navigator.onLine){toast("ยังไม่มีเน็ต","warning");return;}toast(`ส่งร่าง ${drafts.length} รายการ...`,"warning");let ok=0;for(const d of drafts){try{await fetch(WEB_APP_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(d)});ok++;}catch(e){}}if(ok===drafts.length){localStorage.removeItem("sf4_drafts");toast(`ส่งสำเร็จ ${ok} รายการ!`);checkDrafts();fetchAll();}else{localStorage.setItem("sf4_drafts",JSON.stringify(drafts.slice(ok)));toast(`ส่ง ${ok}/${drafts.length}`,"warning");checkDrafts();}}
 
 // SEND POST
-async function sendPost(payload,onSuccess){try{const res=await fetch(WEB_APP_URL,{method:"POST",mode:"cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});await res.text();onSuccess&&onSuccess();}catch(e){toast("ส่งข้อมูลล้มเหลว","error");}}
+async function sendPost(payload,onSuccess){try{await fetch(WEB_APP_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});onSuccess&&onSuccess();}catch(e){toast("ส่งข้อมูลล้มเหลว","error");}}
 
 // DATE
 function todayStr(){return new Date().toISOString().split("T")[0];}
