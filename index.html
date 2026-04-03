@@ -1063,7 +1063,7 @@ textarea.form-control{min-height:100px;resize:vertical;line-height:1.5;word-brea
 // ═══════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxNo8m6B3whoeDgSCErBG2h5_TVhwRv3VPZcpgWcYc6hMrrXNF_NpCT61etarhVN5ac/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwzeiohFlZoQIt6vbGUq07I3Ri-Mw197pgCa9Gv2OMIojDwu7ut6m4Bfmos6mt4L5cH/exec";
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -1113,16 +1113,21 @@ async function api(action, data = {}) {
     return mockApi(action, data);
   }
   try {
-    const res = await fetch(WEB_APP_URL + "?action=" + action, {
-      method: 'POST',
-      redirect: 'follow', // 🌟 แก้ไขจุดที่ 1: บังคับให้ตาม Redirect ของ Google Apps Script เสมอ
-      headers: { 
-        'Content-Type': 'text/plain;charset=utf-8' // 🌟 แก้ไขจุดที่ 2: เปลี่ยนเป็น text/plain เพื่อข้ามการเช็ค CORS (OPTIONS)
-      },
-      body: JSON.stringify({ action, ...data })
+    // ใช้ GET + payload parameter เพื่อแก้ปัญหา CORS/Redirect ของ Google Apps Script
+    // POST พร้อม body จะ fail เพราะ GAS redirect แล้ว browser ตัด body ทิ้ง
+    const payload = encodeURIComponent(JSON.stringify({ action, ...data }));
+    const url = WEB_APP_URL + "?action=" + action + "&payload=" + payload;
+    const res = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow',
     });
     return await res.json();
   } catch (e) {
+    // Offline fallback
+    if (action === 'addSalesLog' || action === 'addBooking' || action === 'addLostDeal') {
+      saveOfflineDraft(action, data);
+      return { ok: true, offline: true, data: { id: 'offline-' + Date.now(), visitNumber: 1 } };
+    }
     return { ok: false, error: e.message };
   }
 }
